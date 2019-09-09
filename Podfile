@@ -6,9 +6,9 @@ target 'StudentHub' do
   use_frameworks!
 
   # Pods for StudentHub
-  #  pod 'Mapbox-iOS-SDK', '~> 5.3'
+    pod 'Mapbox-iOS-SDK', '~> 5.3'
     pod 'RadarSDK', '~> 2.1.0'
-  #  pod 'MapboxDirections.swift', '~> 0.30'
-  #  pod 'MapboxNavigation'
+    pod 'MapboxDirections.swift', '~> 0.30'
+    pod 'MapboxNavigation'
 
 end
