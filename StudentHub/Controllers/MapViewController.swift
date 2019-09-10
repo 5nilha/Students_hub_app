@@ -113,6 +113,12 @@ class MapViewController: UIViewController, CLLocationManagerDelegate  {
 extension MapViewController {
     //------------------------------- MONITORING REGION ------------------------------
     
+    //MARK: -> REGION MONITORING
+    
+    func locationManager(_ manager: CLLocationManager, didStartMonitoringFor region: CLRegion) {
+        locationManager.requestState(for: region)
+    }
+    
     func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
         
         var distance = 0.0
