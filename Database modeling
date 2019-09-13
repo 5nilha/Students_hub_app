@@ -1,0 +1,54 @@
+
+
+//Students
+Students : {yueuehfuegjhslkjyfid8f : {
+            id: "yueuehfuegjhslkjyfid8f",
+            first_name: "John",
+            last_name: "Wick",
+            major: "A.S. Computer Programming"
+            created_at: 100948847474,
+            email: "john.wick@mail.valenciacollege.edu"
+            is_active: True,
+            is_sharing_location: False,
+            last_seen_at: 100948847863,
+            device_id: ""
+            device_type: "Iphone"
+            },
+            {tYoDUHwugdjhdwydgwugf: {
+            id: "tYoDUHwugdjhdwydgwugf",
+            first_name: "John",
+            last_name: "Wick",
+            major: "A.A. Computer Science"
+            created_at: 100948846732,
+            email: "john.wick@mail.valenciacollege.edu"
+            is_active: True,
+            is_sharing_location: False,
+            last_seen_at: 100948847863,
+            device_id: ""
+            device_type: "Iphone"
+            },
+
+//-----------Chats-----------------
+
+//Group Chat
+Group_Chats: {JiuijdiwdiggTDTsde8j : {
+                id: "JiuijdiwdiggTDTsde8j",
+                group_name: "Calculus 2 professor X",
+                members: ["yueuehfuegjhslkjyfid8f", "tYoDUHwugdjhdwydgwugf"],
+                created_at: 100094877232,
+                created_by: {id : "yueuehfuegjhslkjyfid8f", name: "John Wick"}},
+            {UODjihdwugugdwdww : {
+                id: "UODjihdwugugdwdww",
+                group_name: "Java",
+                members: ["yueuehfuegjhslkjyfid8f", "tYoDUHwugdjhdwydgwugf"],
+                created_at: 100094877232,
+                created_by: {id : "yueuehfuegjhslkjyfid8f", name: "John Wick"}},
+
+Messages : { gy3gfyegfy8effhuhef :  {
+                id: "gy3gfyegfy8effhuhef",
+                message_string: "Hi, Everyone! This is my new group"
+                attachment_url: "",
+                sender: {id : "yueuehfuegjhslkjyfid8f", name: "John Wick"}
+                group_id : "JiuijdiwdiggTDTsde8j"
+                }
+            }
