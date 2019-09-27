@@ -14,7 +14,7 @@ struct ChatMessage {
     let date: Date
 }
 
-class MessageViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+class MessagingChatViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
     @IBOutlet weak var tableView: UITableView!
     

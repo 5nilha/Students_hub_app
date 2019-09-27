@@ -24,4 +24,19 @@ extension UIViewController {
             revealViewController().rearViewRevealWidth = self.view.frame.size.width - 120
         }
     }
+    
+    func addSideRightMenuButton(menuButton: UIButton){
+        if revealViewController() != nil {
+            let target = self.revealViewController()
+            let action = #selector(SWRevealViewController.rightRevealToggle(_:))
+            
+            menuButton.addTarget(target, action: action, for: .touchUpInside)
+            
+            self.view.addGestureRecognizer(self.revealViewController().panGestureRecognizer())
+            self.view.addGestureRecognizer(self.revealViewController().tapGestureRecognizer())
+            
+            revealViewController()?.rightViewRevealWidth = self.view.frame.size.width - (self.view.frame.size.width / 2)
+        }
+    }
+    
 }

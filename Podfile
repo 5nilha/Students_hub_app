@@ -10,5 +10,6 @@ target 'StudentHub' do
     pod 'RadarSDK', '~> 2.1.0'
     pod 'MapboxDirections.swift', '~> 0.30'
     pod 'MapboxNavigation'
+    pod 'MessageViewController'
 
 end
