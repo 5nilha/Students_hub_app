@@ -9,13 +9,16 @@
 import UIKit
 import MessageViewController
 
+
 class GroupChatViewController: MessageViewController, UITableViewDataSource, UITableViewDelegate, MessageAutocompleteControllerDelegate {
     
     
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var rightSideMenu: UIButton!
     
-    var data = "Lorem ipsum dolor sit amet|consectetur adipiscing elit|sed do eiusmod|tempor incididunt|ut labore et dolore|magna aliqua| Ut enim ad minim|veniam, quis nostrud|exercitation ullamco|laboris nisi ut aliquip|ex ea commodo consequat|Duis aute|irure dolor in reprehenderit|in voluptate|velit esse cillum|dolore eu|fugiat nulla pariatur|Excepteur sint occaecat|cupidatat non proident|sunt in culpa|qui officia|deserunt|mollit anim id est laborum"
+    var chatMessages = [GroupChatMessage]()
+    
+    var data = "|consectetur adipiscing elit|sed do eiusmod|tempor incididunt|ut labore et dolore|magna aliqua| Ut enim ad minim|veniam, quis nostrud|exercitation ullamco|laboris nisi ut aliquip|ex ea commodo consequat|Duis aute|irure dolor in reprehenderit|in voluptate|velit esse cillum|dolore eu|fugiat nulla pariatur|Excepteur sint occaecat|cupidatat non proident|sunt in culpa|qui officia|deserunt|mollit anim id est laborum"
         .components(separatedBy: "|")
     let users = ["rnystrom", "BasThomas", "jessesquires", "Sherlouk", "omwomw"]
     var autocompleteUsers = [String]()
@@ -74,32 +77,52 @@ class GroupChatViewController: MessageViewController, UITableViewDataSource, UIT
     }
     
     @objc func onRightButton() {
-        data.append(messageView.text)
+        self.chatMessages.append(GroupChatMessage(senderID: "123", senderName: "Fabio", senderAvatarID: "avatar_1", messageString: messageView.text, groupId: "123456789"))
+//        data.append(messageView.text)
         messageView.text = ""
         tableView.reloadData()
         tableView.scrollToRow(
-            at: IndexPath(row: data.count - 1, section: 0),
+            at: IndexPath(row: chatMessages.count - 1, section: 0),
             at: .bottom,
             animated: true
         )
     }
     
+    class DateHeaderLabel: UILabel {
+        override var intrinsicContentSize: CGSize {
+            let originalContentSize = super.intrinsicContentSize
+            let height = originalContentSize.height + 12
+            layer.cornerRadius = height / 2
+            layer.masksToBounds = true
+            return CGSize(width: originalContentSize.width + 16, height: height)
+        }
+    }
+    
     // MARK: UITableViewDataSource
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 60
+    }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return tableView === self.tableView
-            ? data.count
+            ? chatMessages.count
             : autocompleteUsers.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+        
         if tableView === self.tableView {
-            cell.textLabel?.text = data[indexPath.row]
+            let cell = tableView.dequeueReusableCell(withIdentifier: "GroupMessageCell", for: indexPath) as! GroupMessageCell
+            
+            cell.updateView(message: chatMessages[indexPath.row])
+            return cell
         } else {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
             cell.textLabel?.text = autocompleteUsers[indexPath.row]
+            return cell
         }
-        return cell
+        
     }
     
     // MARK: UITableViewDelegate
@@ -116,6 +139,41 @@ class GroupChatViewController: MessageViewController, UITableViewDataSource, UIT
     func didFind(controller: MessageAutocompleteController, prefix: String, word: String) {
         autocompleteUsers = users.filter { word.isEmpty || $0.lowercased().contains(word.lowercased()) }
         controller.show(true)
+    }
+    
+}
+
+
+class GroupMessageCell: UITableViewCell {
+    
+    @IBOutlet weak var avatarImage: UIImageView!
+    @IBOutlet weak var nameLabel: UILabel!
+    @IBOutlet weak var timeLabel: UILabel!
+    @IBOutlet weak var messageLabel: UILabel!
+    @IBOutlet weak var bubbleView: UIView!
+    @IBOutlet weak var bubbleViewLeading: NSLayoutConstraint!
+    @IBOutlet weak var bubbleViewTrailing: NSLayoutConstraint!
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        
+        backgroundColor = .clear
+        messageLabel.numberOfLines = 0
+        bubbleView.layer.cornerRadius = 15
+        bubbleView.backgroundColor = .groupTableViewBackground
+    }
+    
+    func updateView(message: GroupChatMessage){
+        self.nameLabel.text = message.senderName
+        self.messageLabel.text = message.messageString
+        self.avatarImage.image = UIImage(named: message.senderAvatarID)
+//        self.timeLabel =
+        
+        
+        if !message.isIncoming {
+            self.bubbleViewLeading.constant = 100
+            self.bubbleViewTrailing.constant = 10
+        }
     }
     
 }
