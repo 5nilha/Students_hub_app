@@ -25,6 +25,12 @@
 		3E3C7583232615B1008E3C5E /* ContactsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E3C7582232615B1008E3C5E /* ContactsViewController.swift */; };
 		3E3C7585232618C2008E3C5E /* ActiveChatsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E3C7584232618C2008E3C5E /* ActiveChatsViewController.swift */; };
 		3E6AF0CC233F369B006F48D9 /* GroupChatMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E6AF0CB233F369B006F48D9 /* GroupChatMessage.swift */; };
+		3E6AF0CF233FDDF4006F48D9 /* GroupsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E6AF0CE233FDDF4006F48D9 /* GroupsViewController.swift */; };
+		3E6AF0D123402335006F48D9 /* GroupChat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E6AF0D023402335006F48D9 /* GroupChat.swift */; };
+		3E6AF0D4234151A2006F48D9 /* GroupSelectionPopupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E6AF0D3234151A2006F48D9 /* GroupSelectionPopupViewController.swift */; };
+		3E6AF0D6234160B5006F48D9 /* Button+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E6AF0D5234160B5006F48D9 /* Button+Extension.swift */; };
+		3E6AF0D82341CD94006F48D9 /* CreateGroupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E6AF0D72341CD94006F48D9 /* CreateGroupViewController.swift */; };
+		3E6AF0DA2341D249006F48D9 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E6AF0D92341D249006F48D9 /* User.swift */; };
 		3ED5B114233D1A29006B478D /* GroupChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ED5B113233D1A29006B478D /* GroupChatViewController.swift */; };
 		3ED5B116233D60F9006B478D /* GroupChatRightMenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ED5B115233D60F9006B478D /* GroupChatRightMenuViewController.swift */; };
 		3ED5B118233D8DE0006B478D /* CircleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ED5B117233D8DE0006B478D /* CircleView.swift */; };
@@ -56,6 +62,12 @@
 		3E3C7582232615B1008E3C5E /* ContactsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsViewController.swift; sourceTree = "<group>"; };
 		3E3C7584232618C2008E3C5E /* ActiveChatsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveChatsViewController.swift; sourceTree = "<group>"; };
 		3E6AF0CB233F369B006F48D9 /* GroupChatMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupChatMessage.swift; sourceTree = "<group>"; };
+		3E6AF0CE233FDDF4006F48D9 /* GroupsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupsViewController.swift; sourceTree = "<group>"; };
+		3E6AF0D023402335006F48D9 /* GroupChat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupChat.swift; sourceTree = "<group>"; };
+		3E6AF0D3234151A2006F48D9 /* GroupSelectionPopupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupSelectionPopupViewController.swift; sourceTree = "<group>"; };
+		3E6AF0D5234160B5006F48D9 /* Button+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Button+Extension.swift"; sourceTree = "<group>"; };
+		3E6AF0D72341CD94006F48D9 /* CreateGroupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateGroupViewController.swift; sourceTree = "<group>"; };
+		3E6AF0D92341D249006F48D9 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		3ED5B113233D1A29006B478D /* GroupChatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupChatViewController.swift; sourceTree = "<group>"; };
 		3ED5B115233D60F9006B478D /* GroupChatRightMenuViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupChatRightMenuViewController.swift; sourceTree = "<group>"; };
 		3ED5B117233D8DE0006B478D /* CircleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleView.swift; sourceTree = "<group>"; };
@@ -131,6 +143,7 @@
 		3E0B1D122324CC1A00F9B33D /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				3E6AF0D223415151006F48D9 /* GroupChat */,
 				3E0B1D132324CC3100F9B33D /* MapViewController.swift */,
 				3E0B1D1B2324E2B300F9B33D /* FeedsViewController.swift */,
 				3E0B1D1D2324EE4F00F9B33D /* ProfieViewController.swift */,
@@ -138,8 +151,6 @@
 				3E3C757E2325E759008E3C5E /* MessagingChatViewController.swift */,
 				3E3C7582232615B1008E3C5E /* ContactsViewController.swift */,
 				3E3C7584232618C2008E3C5E /* ActiveChatsViewController.swift */,
-				3ED5B113233D1A29006B478D /* GroupChatViewController.swift */,
-				3ED5B115233D60F9006B478D /* GroupChatRightMenuViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -148,6 +159,8 @@
 			isa = PBXGroup;
 			children = (
 				3E6AF0CB233F369B006F48D9 /* GroupChatMessage.swift */,
+				3E6AF0D023402335006F48D9 /* GroupChat.swift */,
+				3E6AF0D92341D249006F48D9 /* User.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -156,6 +169,7 @@
 			isa = PBXGroup;
 			children = (
 				3E0B1D172324D52400F9B33D /* MyCustomPointAnnotation.swift */,
+				3E6AF0D5234160B5006F48D9 /* Button+Extension.swift */,
 				3E0B1D192324E0CC00F9B33D /* TabBarExtension.swift */,
 				3E3C757A2325BE72008E3C5E /* ViewControllerExtension.swift */,
 				3E3C75802326087A008E3C5E /* DateExtension.swift */,
@@ -173,6 +187,18 @@
 				3E3C75752325B3E8008E3C5E /* StudentHub-Bridging-Header.h */,
 			);
 			path = External_APIs;
+			sourceTree = "<group>";
+		};
+		3E6AF0D223415151006F48D9 /* GroupChat */ = {
+			isa = PBXGroup;
+			children = (
+				3ED5B113233D1A29006B478D /* GroupChatViewController.swift */,
+				3E6AF0CE233FDDF4006F48D9 /* GroupsViewController.swift */,
+				3ED5B115233D60F9006B478D /* GroupChatRightMenuViewController.swift */,
+				3E6AF0D3234151A2006F48D9 /* GroupSelectionPopupViewController.swift */,
+				3E6AF0D72341CD94006F48D9 /* CreateGroupViewController.swift */,
+			);
+			path = GroupChat;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -293,10 +319,16 @@
 			files = (
 				3ED5B116233D60F9006B478D /* GroupChatRightMenuViewController.swift in Sources */,
 				3E0B1D1C2324E2B300F9B33D /* FeedsViewController.swift in Sources */,
+				3E6AF0D82341CD94006F48D9 /* CreateGroupViewController.swift in Sources */,
+				3E6AF0DA2341D249006F48D9 /* User.swift in Sources */,
 				3E3C7583232615B1008E3C5E /* ContactsViewController.swift in Sources */,
+				3E6AF0D123402335006F48D9 /* GroupChat.swift in Sources */,
 				3E3C75812326087A008E3C5E /* DateExtension.swift in Sources */,
+				3E6AF0CF233FDDF4006F48D9 /* GroupsViewController.swift in Sources */,
 				3E0B1D1A2324E0CC00F9B33D /* TabBarExtension.swift in Sources */,
+				3E6AF0D6234160B5006F48D9 /* Button+Extension.swift in Sources */,
 				3E3C757B2325BE72008E3C5E /* ViewControllerExtension.swift in Sources */,
+				3E6AF0D4234151A2006F48D9 /* GroupSelectionPopupViewController.swift in Sources */,
 				3E6AF0CC233F369B006F48D9 /* GroupChatMessage.swift in Sources */,
 				3ED5B114233D1A29006B478D /* GroupChatViewController.swift in Sources */,
 				3E0B1D032324626A00F9B33D /* ViewController.swift in Sources */,

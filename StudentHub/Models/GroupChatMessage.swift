@@ -98,6 +98,7 @@ struct GroupChatMessage {
         }
     }
     
+    
     init(senderID: String, senderName: String, senderAvatarID: String, messageString: String, groupId: String) {
         self._senderID = senderID
         self._senderName = senderName
@@ -106,6 +107,20 @@ struct GroupChatMessage {
         self._groupId = groupId
         self._date = Date()
         self._isIncoming = false
+    }
+    
+    init(id: String, date: Date, isIncoming: Bool,  senderID: String, senderName: String, senderAvatarID: String, messageString: String, groupId: String, hasAttachment: Bool, attachmentURL: String, attachmentType: AttachmentTypes) {
+        self._id = id
+        self._date = date
+        self._isIncoming = isIncoming
+        self._senderID = senderID
+        self._senderName = senderName
+        self._senderAvatarID = senderAvatarID
+        self._messageString = messageString
+        self._groupId = groupId
+        self._hasAttachment = hasAttachment
+        self._attachmentURL = attachmentURL
+        self._attachmentType = attachmentType 
     }
     
     mutating func attachLink(linkURL: String) {

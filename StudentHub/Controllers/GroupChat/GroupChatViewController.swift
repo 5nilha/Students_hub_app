@@ -148,6 +148,7 @@ class GroupMessageCell: UITableViewCell {
     
     @IBOutlet weak var avatarImage: UIImageView!
     @IBOutlet weak var nameLabel: UILabel!
+    @IBOutlet weak var majorLabel: UILabel!
     @IBOutlet weak var timeLabel: UILabel!
     @IBOutlet weak var messageLabel: UILabel!
     @IBOutlet weak var bubbleView: UIView!
@@ -161,6 +162,7 @@ class GroupMessageCell: UITableViewCell {
         messageLabel.numberOfLines = 0
         bubbleView.layer.cornerRadius = 15
         bubbleView.backgroundColor = .groupTableViewBackground
+        
     }
     
     func updateView(message: GroupChatMessage){
@@ -168,6 +170,7 @@ class GroupMessageCell: UITableViewCell {
         self.messageLabel.text = message.messageString
         self.avatarImage.image = UIImage(named: message.senderAvatarID)
 //        self.timeLabel =
+        self.majorLabel.roundCorner(radius: 5)
         
         
         if !message.isIncoming {
