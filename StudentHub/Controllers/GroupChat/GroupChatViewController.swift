@@ -9,20 +9,17 @@
 import UIKit
 import MessageViewController
 
-
 class GroupChatViewController: MessageViewController, UITableViewDataSource, UITableViewDelegate, MessageAutocompleteControllerDelegate {
-    
-    
+
+    @IBOutlet weak var groupNameLabel: UILabel!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var rightSideMenu: UIButton!
     
+    var groupChat: GroupChat!
     var chatMessages = [GroupChatMessage]()
     
-    var data = "|consectetur adipiscing elit|sed do eiusmod|tempor incididunt|ut labore et dolore|magna aliqua| Ut enim ad minim|veniam, quis nostrud|exercitation ullamco|laboris nisi ut aliquip|ex ea commodo consequat|Duis aute|irure dolor in reprehenderit|in voluptate|velit esse cillum|dolore eu|fugiat nulla pariatur|Excepteur sint occaecat|cupidatat non proident|sunt in culpa|qui officia|deserunt|mollit anim id est laborum"
-        .components(separatedBy: "|")
     let users = ["rnystrom", "BasThomas", "jessesquires", "Sherlouk", "omwomw"]
     var autocompleteUsers = [String]()
-    
     
     
     override func viewDidLoad() {
@@ -70,22 +67,37 @@ class GroupChatViewController: MessageViewController, UITableViewDataSource, UIT
         messageAutocompleteController.delegate = self
         
         setup(scrollView: tableView)
+        self.groupNameLabel.text = CurrentUser.activeGroupChat.groupName
+        self.readMessages()
     }
-
+    
     @objc func onLeftButton() {
         print("Did press left button")
     }
     
     @objc func onRightButton() {
-        self.chatMessages.append(GroupChatMessage(senderID: "123", senderName: "Fabio", senderAvatarID: "avatar_1", messageString: messageView.text, groupId: "123456789"))
-//        data.append(messageView.text)
-        messageView.text = ""
-        tableView.reloadData()
-        tableView.scrollToRow(
-            at: IndexPath(row: chatMessages.count - 1, section: 0),
-            at: .bottom,
-            animated: true
-        )
+        let newMessage = GroupChatMessage(senderID: CurrentUser.id, senderName: CurrentUser.fullName, senderAvatarID: CurrentUser.avatarID, senderMajor: CurrentUser.major, messageString: messageView.text, groupId: CurrentUser.activeGroupChat.id)
+        
+        
+        Database.service.createGroupChatMessage(groupID: newMessage.groupId, data: newMessage.jsonData) {
+            self.messageView.text = ""
+        }
+    }
+    
+    
+    func readMessages() {
+        Database.service.snapshotChatMessages(groupID: CurrentUser.activeGroupChat.id) { (messages) in
+            self.chatMessages = messages
+            self.tableView.reloadData()
+            if self.chatMessages.count > 1 {
+                self.tableView.scrollToRow(
+                    at: IndexPath(row: self.chatMessages.count - 1, section: 0),
+                    at: .bottom,
+                    animated: false
+                )
+            }
+            
+        }
     }
     
     class DateHeaderLabel: UILabel {
@@ -166,16 +178,22 @@ class GroupMessageCell: UITableViewCell {
     }
     
     func updateView(message: GroupChatMessage){
+        let calendar = Calendar.current
         self.nameLabel.text = message.senderName
         self.messageLabel.text = message.messageString
         self.avatarImage.image = UIImage(named: message.senderAvatarID)
-//        self.timeLabel =
+        self.timeLabel.text = calendar.getCurrentTimeHoursMins(date: message.date)
         self.majorLabel.roundCorner(radius: 5)
+        self.majorLabel.text = "  \(message.senderMajor)  "
         
         
-        if !message.isIncoming {
+        if message.senderID == CurrentUser.id {
             self.bubbleViewLeading.constant = 100
             self.bubbleViewTrailing.constant = 10
+        }
+        else {
+            self.bubbleViewLeading.constant = 10
+            self.bubbleViewTrailing.constant = 100
         }
     }
     

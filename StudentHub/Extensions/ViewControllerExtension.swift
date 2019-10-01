@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import SCLAlertView
 
 extension UIViewController {
     
@@ -37,6 +38,17 @@ extension UIViewController {
             
             revealViewController()?.rightViewRevealWidth = self.view.frame.size.width - (self.view.frame.size.width / 2)
         }
+    }
+    
+    func errorAlert(title: String, message: String) {
+        let appearance = SCLAlertView.SCLAppearance( showCloseButton: false)
+        let alertView = SCLAlertView(appearance: appearance)
+        
+        alertView.addButton("OK") {
+            alertView.dismiss(animated: true, completion: nil)
+        }
+        
+        alertView.showError(title, subTitle: message)
     }
     
 }

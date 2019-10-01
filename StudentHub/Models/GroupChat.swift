@@ -11,6 +11,7 @@ import Foundation
 struct GroupChat {
     private var _id: String = ""
     private var _groupName: String = ""
+    private var _groupImageURL: String = ""
     private var _groupImage: UIImage = #imageLiteral(resourceName: "studend_hub_logo")
     private var _groupMembers: [String] = [String]()
     private var _adminID: String = ""
@@ -41,6 +42,9 @@ struct GroupChat {
     var groupImage: UIImage {
         get {
             return self._groupImage
+        }
+        set (image) {
+            self._groupImage = image
         }
     }
     
@@ -117,6 +121,7 @@ struct GroupChat {
         }
     }
     
+    init() {}
     
     init(group_name: String, adminEmail: String, createdByID: String, createdByName: String, isPrivate: Bool, description: String, groupImage: UIImage) {
         self._groupName = group_name
@@ -155,16 +160,52 @@ struct GroupChat {
         return code
     }
     
-    private func jsonData() -> [String: Any] {
+    mutating func initializeFromJson(json: [String : Any], completion: @escaping (UIImage) -> ()) {
+        self._id = json["id"] as? String ?? ""
+        self._groupName = json["group_name"] as? String ?? ""
+        self._createdByID = json["created_by_id"] as? String ?? ""
+        self._createdByName = json["created_by_name"] as? String ?? ""
+        self._adminID = json["admin_id"] as? String ?? ""
+        self._adminName = json["admin_name"] as? String ?? ""
+        self._adminEmail = json["admin_email"] as? String ?? ""
+        self._isPrivate = json["is_private"] as? Bool ?? false
+        self._createdAt = json["created_at"] as? Date ?? Date()
+        self._groupMembers = json["group_members"] as? [String] ?? [String]()
+        self._description = json["description"] as? String ?? ""
+        self._code = json["code"] as? String ?? ""
+        self._publicIdentifier = json["public_identifier"] as? String ?? ""
+        self._groupImageURL = json["group_image_url"] as? String ?? ""
+        
+        DatabaseStorage.service.loadImageFromStorage(url: _groupImageURL) { (image) in
+            completion(image)
+        }
+    }
+    
+    mutating func setGroupImage(image: UIImage) {
+        groupImage = image
+    }
+    
+    mutating func appendMember(id: String) {
+        self._groupMembers.append(id)
+        Database.service.appendMember(groupID: self._id, memberID: id)
+    }
+    
+    var jsonData : [String: Any] {
         return ["id" : self._id,
                 "group_name" : self._groupName,
+                "group_image_url" : self._groupImageURL,
                 "group_members" : self._groupMembers,
+                "admin_id" : self._adminID,
+                "admin_name" : self._adminName,
+                "admin_email" : self._adminEmail,
+                "moderators" : self._moderators,
                 "created_at" : self._createdAt,
                 "created_by_id" : self._createdByID,
                 "created_by_name" : self._createdByName,
                 "public_identifier" : self._publicIdentifier,
                 "code" : self._code,
-                "is_private" : self._isPrivate]
+                "is_private" : self._isPrivate,
+                "description" : self._description]
     }
     
 }

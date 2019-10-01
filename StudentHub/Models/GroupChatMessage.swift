@@ -20,7 +20,7 @@ struct GroupChatMessage {
     private var _id: String = ""
     private var _messageString: String = ""
     private var _attachmentURL: String = ""
-    private var _attachmentType: AttachmentTypes = .none
+    private var _attachmentType: String = AttachmentTypes.none.rawValue
     private var _hasAttachment: Bool = false
     private var _groupId: String = ""
     private var _isIncoming: Bool = true
@@ -28,6 +28,7 @@ struct GroupChatMessage {
     private var _senderID: String = ""
     private var _senderName: String = ""
     private var _senderAvatarID: String = ""
+    private var _senderMajor: String = ""
 
     //GETTERS
     
@@ -49,7 +50,7 @@ struct GroupChatMessage {
         }
     }
     
-    var attachmentType: AttachmentTypes {
+    var attachmentType: String {
         get {
             return self._attachmentType
         }
@@ -98,11 +99,19 @@ struct GroupChatMessage {
         }
     }
     
+    var senderMajor: String {
+        get {
+            return _senderMajor
+        }
+    }
     
-    init(senderID: String, senderName: String, senderAvatarID: String, messageString: String, groupId: String) {
+    init(){}
+    
+    init(senderID: String, senderName: String, senderAvatarID: String, senderMajor: String, messageString: String, groupId: String) {
         self._senderID = senderID
         self._senderName = senderName
         self._senderAvatarID = senderAvatarID
+        self._senderMajor = senderMajor
         self._messageString = messageString
         self._groupId = groupId
         self._date = Date()
@@ -120,13 +129,28 @@ struct GroupChatMessage {
         self._groupId = groupId
         self._hasAttachment = hasAttachment
         self._attachmentURL = attachmentURL
-        self._attachmentType = attachmentType 
+        self._attachmentType = attachmentType.rawValue
+    }
+    
+    mutating func initializeFromJson(json: [String : Any]) {
+        self._id = json["id"] as? String ?? ""
+        self._date = json["date"] as? Date ?? Date()
+        self._isIncoming = json["is_incoming"] as? Bool ?? true
+        self._senderID = json["sender_id"] as? String ?? ""
+        self._senderName = json["sender_name"] as? String ?? ""
+        self._senderAvatarID = json["sender_avatar_id"] as? String ?? ""
+        self._senderMajor = json["sender_major"] as? String ?? ""
+        self._messageString = json["message_string"] as? String ?? ""
+        self._groupId = json["group_id"] as? String ?? ""
+        self._hasAttachment = json["has_attachment"] as? Bool ?? false
+        self._attachmentURL = json["attachment_url"] as? String ?? ""
+        self._attachmentType = json["attachment_type"] as? String ?? AttachmentTypes.none.rawValue
     }
     
     mutating func attachLink(linkURL: String) {
         self._hasAttachment = true
         self._attachmentURL = linkURL
-        self._attachmentType = .link
+        self._attachmentType = AttachmentTypes.link.rawValue
     }
     
     mutating func attachImage(image: UIImage) {
@@ -135,12 +159,13 @@ struct GroupChatMessage {
         let imageURL = ""
         self._hasAttachment = true
         self._attachmentURL = imageURL
-        self._attachmentType = .image
+        self._attachmentType = AttachmentTypes.image.rawValue
     }
     
     
     
-    private func jsonData() -> [String : Any] {
+    
+    var jsonData: [String : Any] {
         return ["id" : self._id,
                 "message_string" : self._messageString,
                 "attachment_url" : self._attachmentURL,
@@ -148,7 +173,8 @@ struct GroupChatMessage {
                 "has_attachment" : self._hasAttachment,
                 "sender_id" : self._senderID,
                 "sender_name" : self._senderName,
-                "sender_avatar_id" : self.senderAvatarID,
+                "sender_avatar_id" : self._senderAvatarID,
+                "sender_major" : self._senderMajor,
                 "group_id" : self._groupId,
                 "is_incoming" : self._isIncoming,
                 "date" : self._date]

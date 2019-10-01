@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Firebase
 import RadarSDK
 
 
@@ -18,6 +19,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        FirebaseApp.configure()
         
         let publishableKey = "prj_live_pk_b7fb40fedad57d7fc738de5ee579929a401d7d43"
         Radar.initialize(publishableKey: publishableKey)

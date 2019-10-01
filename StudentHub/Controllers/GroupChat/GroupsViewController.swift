@@ -9,15 +9,17 @@
 import UIKit
 
 
-class GroupsViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource {
+class GroupsViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UISearchBarDelegate {
     
     
+    @IBOutlet weak var searchbar: UISearchBar!
     @IBOutlet weak var myGroupsCollectionView: UICollectionView!
     @IBOutlet weak var allGroupsCollectionView: UICollectionView!
     var sections = ["MY GROUPS", "ALL GROUPS"]
     
     var myActiveGroups = [GroupChat]()
     var allGroups = [GroupChat]()
+    var allGroupsFiltered = [GroupChat]()
 
     var selectedGroup: GroupChat!
     
@@ -27,12 +29,23 @@ class GroupsViewController: UIViewController, UICollectionViewDelegate, UICollec
         self.allGroupsCollectionView.dataSource = self
         self.myGroupsCollectionView.delegate = self
         self.myGroupsCollectionView.dataSource = self
+        self.searchbar.delegate = self
 
         updateGroups()
     }
     
     func updateGroups() {
         //Call database
+        Database.service.snapshotGroups { (groups) in
+            self.allGroups = groups
+            self.allGroupsFiltered = self.allGroups
+            self.allGroupsCollectionView.reloadData()
+            
+            self.myActiveGroups = groups.filter({ (group) -> Bool in
+                return group.groupMembers.contains(CurrentUser.id)
+            })
+            self.myGroupsCollectionView.reloadData()
+        }
     }
     
     @IBAction func createGroupTapped(_ sender: UIButton) {
@@ -47,13 +60,28 @@ class GroupsViewController: UIViewController, UICollectionViewDelegate, UICollec
         }
     }
     
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if let search = searchbar.text {
+            if search.isEmpty {
+                self.allGroupsFiltered = allGroups
+            } else {
+                self.allGroupsFiltered = allGroups.filter({ (group) -> Bool in
+                    return group.groupName.lowercased().contains(search) || group.publicIdentifier.contains(search)
+                })
+            }
+        }
+        else {
+            self.allGroupsFiltered = allGroups
+        }
+        self.allGroupsCollectionView.reloadData()
+    }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if collectionView == self.myGroupsCollectionView {
             return myActiveGroups.count
         }
         else {
-            return allGroups.count
+            return allGroupsFiltered.count
         }
     }
     
@@ -65,7 +93,7 @@ class GroupsViewController: UIViewController, UICollectionViewDelegate, UICollec
         }
         else {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "AllGroupsCollectionCell", for: indexPath) as! AllGroupsCollectionCell
-            cell.updateView(groupChat: allGroups[indexPath.row])
+            cell.updateView(groupChat: allGroupsFiltered[indexPath.row])
             return cell
         }
     }
@@ -73,12 +101,17 @@ class GroupsViewController: UIViewController, UICollectionViewDelegate, UICollec
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if collectionView == self.myGroupsCollectionView {
             self.selectedGroup = myActiveGroups[indexPath.row]
+            CurrentUser.activeGroupChat = self.selectedGroup
             self.performSegue(withIdentifier: "goToGroupSegue", sender: self)
         }
         else {
-            self.selectedGroup = myActiveGroups[indexPath.row]
+            self.selectedGroup = allGroupsFiltered[indexPath.row]
             self.performSegue(withIdentifier: "segueToPopup", sender: self)
         }
+    }
+    
+    @IBAction func unwindToGroupsVC(sender: UIStoryboardSegue) {
+        
     }
 }
 
@@ -88,17 +121,20 @@ class MyGroupCell: UICollectionViewCell {
     @IBOutlet weak var groupView: UIView!
     @IBOutlet weak var badgeView: UIView!
     @IBOutlet weak var groupNameLabel: UILabel!
+    @IBOutlet weak var groupImage: UIImageView!
     
     
     
     override func awakeFromNib() {
         super.awakeFromNib()
         self.groupView.roundCorner(radius: 16)
+        self.groupImage.roundCorner(radius: 16)
         self.badgeView.circle()
     }
     
     func updateView(groupChat: GroupChat) {
         self.groupNameLabel.text = groupChat.groupName
+        self.groupImage.image = groupChat.groupImage
     }
 }
 
@@ -113,6 +149,7 @@ class AllGroupsCollectionCell: UICollectionViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         self.groupView.roundCorner(radius: 10)
+        self.imageLabel.roundCorner(radius: 10)
         self.groupView.setShadow(color: .black, opacity: 0.6, shadowRadius: 5, shadowOffset_x: 0, shadowOffset_y: 0)
     }
     
