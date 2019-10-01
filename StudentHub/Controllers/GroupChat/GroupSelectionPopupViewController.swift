@@ -51,7 +51,7 @@ class GroupSelectionPopupViewController: UIViewController {
     
     @IBAction func enterGroupChat(_ sender: UIButton) {
         CurrentUser.activeGroupChat = self.groupChat
-        self.groupChat.appendMember(id: CurrentUser.id)
+        self.groupChat.appendMember(id: CurrentUser.id, name: CurrentUser.fullName)
         self.performSegue(withIdentifier: "goToGroupSegue", sender: self)
     }
     

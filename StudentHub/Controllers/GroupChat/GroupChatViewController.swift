@@ -8,6 +8,7 @@
 
 import UIKit
 import MessageViewController
+import UserNotifications
 
 class GroupChatViewController: MessageViewController, UITableViewDataSource, UITableViewDelegate, MessageAutocompleteControllerDelegate {
 
@@ -15,12 +16,8 @@ class GroupChatViewController: MessageViewController, UITableViewDataSource, UIT
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var rightSideMenu: UIButton!
     
-    var groupChat: GroupChat!
-    var chatMessages = [GroupChatMessage]()
-    
     let users = ["rnystrom", "BasThomas", "jessesquires", "Sherlouk", "omwomw"]
     var autocompleteUsers = [String]()
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -67,9 +64,50 @@ class GroupChatViewController: MessageViewController, UITableViewDataSource, UIT
         messageAutocompleteController.delegate = self
         
         setup(scrollView: tableView)
-        self.groupNameLabel.text = CurrentUser.activeGroupChat.groupName
-        self.readMessages()
+        
+        self.updateView()
+        
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(applicationWillTerminate),
+                                               name: UIApplication.willTerminateNotification,
+                                               object: nil)
+        
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(applicationWillTerminate),
+                                               name: UIApplication.willResignActiveNotification,
+                                               object: nil)
+        
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(applicationWillEnterForeground),
+                                               name: UIApplication.willEnterForegroundNotification,
+                                               object: nil)
+        
+        
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        CurrentUser.activeGroupChat.isMemberOnline(online: false, memberID: CurrentUser.id)
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    @objc func applicationWillTerminate()  {
+        print("TERMINATING")
+        CurrentUser.activeGroupChat.isMemberOnline(online: false, memberID: CurrentUser.id)
+    }
+    
+    @objc func applicationWillEnterForeground()  {
+        print("Opening")
+        CurrentUser.activeGroupChat.isMemberOnline(online: true, memberID: CurrentUser.id)
+    }
+    
+    
+    
     
     @objc func onLeftButton() {
         print("Did press left button")
@@ -85,13 +123,20 @@ class GroupChatViewController: MessageViewController, UITableViewDataSource, UIT
     }
     
     
+    func updateView() {
+        self.groupNameLabel.text = CurrentUser.activeGroupChat.groupName
+        CurrentUser.activeGroupChat.isMemberOnline(online: true, memberID: CurrentUser.id)
+        readMessages()
+    }
+    
     func readMessages() {
         Database.service.snapshotChatMessages(groupID: CurrentUser.activeGroupChat.id) { (messages) in
-            self.chatMessages = messages
+            CurrentUser.activeGroupChat.messages = messages
             self.tableView.reloadData()
-            if self.chatMessages.count > 1 {
+            let messageCount = CurrentUser.activeGroupChat.messages.count
+            if messageCount > 1 {
                 self.tableView.scrollToRow(
-                    at: IndexPath(row: self.chatMessages.count - 1, section: 0),
+                    at: IndexPath(row: messageCount - 1, section: 0),
                     at: .bottom,
                     animated: false
                 )
@@ -118,7 +163,7 @@ class GroupChatViewController: MessageViewController, UITableViewDataSource, UIT
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return tableView === self.tableView
-            ? chatMessages.count
+            ? CurrentUser.activeGroupChat.messages.count
             : autocompleteUsers.count
     }
     
@@ -127,7 +172,7 @@ class GroupChatViewController: MessageViewController, UITableViewDataSource, UIT
         if tableView === self.tableView {
             let cell = tableView.dequeueReusableCell(withIdentifier: "GroupMessageCell", for: indexPath) as! GroupMessageCell
             
-            cell.updateView(message: chatMessages[indexPath.row])
+            cell.updateView(message: CurrentUser.activeGroupChat.messages[indexPath.row])
             return cell
         } else {
             let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)

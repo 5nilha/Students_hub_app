@@ -30,8 +30,16 @@ class GroupsViewController: UIViewController, UICollectionViewDelegate, UICollec
         self.myGroupsCollectionView.delegate = self
         self.myGroupsCollectionView.dataSource = self
         self.searchbar.delegate = self
-
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         updateGroups()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        Database.service.removesnapshotGroupsListener()
     }
     
     func updateGroups() {
@@ -42,7 +50,7 @@ class GroupsViewController: UIViewController, UICollectionViewDelegate, UICollec
             self.allGroupsCollectionView.reloadData()
             
             self.myActiveGroups = groups.filter({ (group) -> Bool in
-                return group.groupMembers.contains(CurrentUser.id)
+                return group.groupMembersID.contains(CurrentUser.id)
             })
             self.myGroupsCollectionView.reloadData()
         }

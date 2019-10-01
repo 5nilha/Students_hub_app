@@ -16,6 +16,9 @@ class Database {
     private var db = Firestore.firestore()
     static let service = Database()
     
+    var groupsChatListener: ListenerRegistration!
+    var membersOnlineListener: ListenerRegistration!
+    
     func reference(collectionReference: DataCollectionReference) -> CollectionReference {
         return db.collection(collectionReference.rawValue)
     }
@@ -55,11 +58,11 @@ class Database {
             documentData["group_image_url"] = url
             
             let batch = self.db.batch()
+            
             let groupRef = self.reference(collectionReference: .chat_groups).document()
             let docID = groupRef.documentID
             documentData["id"] = docID
             batch.setData(documentData, forDocument: groupRef, merge: true)
-            
             
             // Commit the batch
             batch.commit() { err in
@@ -74,7 +77,7 @@ class Database {
     }
     
     func snapshotGroups(completion: @escaping ([GroupChat]) -> ()) {
-        self.reference(collectionReference: .chat_groups).addSnapshotListener { (snapshot, error) in
+        groupsChatListener = self.reference(collectionReference: .chat_groups).addSnapshotListener { (snapshot, error) in
             if let error = error {
                 print("Error snapshoting Groups -> \(error.localizedDescription)")
                 return
@@ -94,8 +97,78 @@ class Database {
         }
     }
     
-    func appendMember(groupID: String, memberID: String) {
-        self.reference(collectionReference: .chat_groups).document(groupID).setData(["group_members" :  FieldValue.arrayUnion([memberID])], merge: true)
+    func removesnapshotGroupsListener() {
+        if groupsChatListener != nil {
+            groupsChatListener.remove()
+        }
+    }
+    
+    func appendMember(groupID: String, memberID: String, data: [String: Any]) {
+        
+        let batch = self.db.batch()
+        
+        let groupMembersRef = self.reference(collectionReference: .chat_groups).document(groupID)
+        batch.setData(["group_members" :  FieldValue.arrayUnion([data])], forDocument: groupMembersRef, merge: true)
+        
+        let membersIDRef = self.reference(collectionReference: .chat_groups).document(groupID)
+        batch.setData(["group_members_id" :  FieldValue.arrayUnion([memberID])], forDocument: membersIDRef, merge: true)
+        
+        // Commit the batch
+        batch.commit() { err in
+            if let err = err {
+                print("Error writing batch \(err)")
+            } else {
+                print("Batch write succeeded.")
+            }
+        }
+    }
+    
+    func deleteMemberID(groupID: String, memberID: String) {
+        let batch = self.db.batch()
+        
+        let membersIDRef = self.reference(collectionReference: .chat_groups).document(groupID)
+        batch.setData(["group_members_id" :  FieldValue.arrayRemove([memberID])], forDocument: membersIDRef, merge: true)
+        
+        // Commit the batch
+        batch.commit() { err in
+            if let err = err {
+                print("Error writing batch \(err)")
+            } else {
+                print("Batch write succeeded.")
+            }
+        }
+    }
+        
+    
+    func updateMembers(groupID: String, membersArray: [[String : Any]]) {
+        self.reference(collectionReference: .chat_groups).document(groupID).updateData(["group_members": membersArray])
+    }
+    
+    func appendMemberOnline(groupID: String, memberID: String) {
+        self.reference(collectionReference: .chat_groups).document(groupID).setData(["members_online" :  FieldValue.arrayUnion([memberID])], merge: true)
+    }
+    
+    func removeMemberOnline(groupID: String, memberID: String) {
+        self.reference(collectionReference: .chat_groups).document(groupID).setData(["members_online" :  FieldValue.arrayRemove([memberID])], merge: true)
+    }
+    
+    func snapshotMemberOnline(groupID: String, completion: @escaping ([String]) -> ()) {
+        membersOnlineListener = self.reference(collectionReference: .chat_groups).document(groupID).addSnapshotListener { (snapshot, error) in
+            if let error = error {
+                print("Error snapshoting Groups -> \(error.localizedDescription)")
+                return
+            }
+            
+            guard let documentData = snapshot?.data() else { return }
+            let membersOnline = documentData["members_online"] as? [String] ?? [String]()
+            completion(membersOnline)
+        }
+    }
+    
+    func removesMembersOnlineListener() {
+        if self.membersOnlineListener != nil {
+            membersOnlineListener.remove()
+        }
     }
     
     //MARK: ----------- GROUP CHAT DATA -----------------------
