@@ -24,6 +24,8 @@ struct User {
     private var _lastSeenAt: Date = Date()
     private var _deviceID: String = ""
     private var _deviceType: String = ""
+    private var _groupsInviting: [String] = [String]()
+    private var _lastMessageIndexSeenOnGroups = [String: Int]()
     
     public var activeGroupChat: GroupChat!
     
@@ -123,6 +125,25 @@ struct User {
         }
     }
     
+    var groupsInviting: [String] {
+        get {
+            return self._groupsInviting
+        }
+        set {
+            self._groupsInviting = newValue
+        }
+    }
+    
+    var lastMessageIndexSeenOnGroups: [String: Int] {
+        get {
+            return _lastMessageIndexSeenOnGroups
+        }
+        set {
+            self._lastMessageIndexSeenOnGroups = newValue
+        }
+    }
+    
+    
     init (){}
     
     mutating func initializeFromJson(json: [String: Any]) {
@@ -141,6 +162,8 @@ struct User {
         self._lastSeenAt = json["last_seen_at"] as? Date ?? Date()
         self._deviceID = json["device_id"] as? String ?? ""
         self._deviceType = json["device_type"] as? String ?? ""
+        self._groupsInviting = json["groups_inviting"] as? [String] ?? [String]()
+        self._lastMessageIndexSeenOnGroups = json["last_message_index_seen_on_group"] as? [String : Int] ?? [String : Int]()
     }
     
     mutating func setNewUser(id: String, email: String) {
@@ -176,7 +199,9 @@ struct User {
                 "is_sharing_location" : self._isSharingLocation,
                 "last_seen_at" : self._lastSeenAt,
                 "device_id" : self._deviceID,
-                "device_type" : self._deviceType]
+                "device_type" : self._deviceType,
+                "groups_inviting" : self._groupsInviting,
+                "last_message_index_seen_on_group" : self._lastMessageIndexSeenOnGroups]
     }
     
 }

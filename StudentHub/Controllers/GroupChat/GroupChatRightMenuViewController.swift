@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SCLAlertView
 
 class GroupChatRightMenuViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
@@ -20,11 +21,12 @@ class GroupChatRightMenuViewController: UIViewController, UITableViewDelegate, U
         super.viewDidLoad()
         self.tableView.delegate = self
         self.tableView.dataSource = self
-        self.updateView()
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.updateView()
         Database.service.snapshotMemberOnline(groupID: CurrentUser.activeGroupChat.id) { (membersID) in
             CurrentUser.activeGroupChat.membersOnline = membersID
             self.tableView.reloadData()
@@ -33,7 +35,7 @@ class GroupChatRightMenuViewController: UIViewController, UITableViewDelegate, U
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        Database.service.removesMembersOnlineListener()
+//        Database.service.removesMembersOnlineListener()
     }
     
     func updateView() {
@@ -47,6 +49,22 @@ class GroupChatRightMenuViewController: UIViewController, UITableViewDelegate, U
     @IBAction func leaveGroupTapped(_ sender: UIButton) {
         CurrentUser.activeGroupChat.deleteMember(id: CurrentUser.id, name: CurrentUser.fullName)
     }
+    
+    @IBAction func inviteUserTapped(_ sender: UIButton) {
+        let appearance = SCLAlertView.SCLAppearance( showCloseButton: false)
+        let alertView = SCLAlertView(appearance: appearance)
+        let email = alertView.addTextField("Enter user email")
+        
+        alertView.addButton("Cancel") {
+            alertView.dismiss(animated: true, completion: nil)
+        }
+        alertView.addButton("Send") {
+            Database.service.inviteUserToGroup(email: email.text ?? "", groupID: CurrentUser.activeGroupChat.id, groupIdentifier: CurrentUser.activeGroupChat.publicIdentifier)
+            alertView.dismiss(animated: true, completion: nil)
+        }
+        alertView.showInfo("Invite User", subTitle: "Enter User information")
+    }
+    
     
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

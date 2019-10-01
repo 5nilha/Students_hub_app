@@ -9,15 +9,19 @@
 import Foundation
 import Firebase
 import FirebaseFirestore
+import SCLAlertView
 
-class Database {
+class Database: AppConfig {
     
-    private init() {}
+    private override init() {}
     private var db = Firestore.firestore()
     static let service = Database()
     
     var groupsChatListener: ListenerRegistration!
     var membersOnlineListener: ListenerRegistration!
+    var userInvitingsListener: ListenerRegistration!
+    var lastMessageSeenIndexesListener: ListenerRegistration!
+    var chatMessagesListener: ListenerRegistration!
     
     func reference(collectionReference: DataCollectionReference) -> CollectionReference {
         return db.collection(collectionReference.rawValue)
@@ -171,6 +175,62 @@ class Database {
         }
     }
     
+    func inviteUserToGroup(email: String, groupID: String, groupIdentifier: String) {
+        
+        self.reference(collectionReference: .users).whereField("email", isEqualTo: email).getDocuments { (query, error) in
+            if error != nil {
+                self.ErrorAlert(title: "Error", message: "User not found.")
+                return
+            }
+            
+            guard let documents = query?.documents else { return }
+            
+            print("Getting user to invite \(documents.count)")
+            
+            if documents.count >= 1 {
+                let documentData = documents[0].data()
+                var user = User()
+                user.initializeFromJson(json: documentData)
+                
+                let batch = self.db.batch()
+                print("Getting user to invite \(user.id)")
+                let userIDRef = self.reference(collectionReference: .users).document(user.id)
+                batch.setData(["groups_inviting" :  FieldValue.arrayUnion([groupIdentifier])], forDocument: userIDRef, merge: true)
+                
+                let invitingRef = self.reference(collectionReference: .chat_groups).document(groupID)
+                batch.setData(["inviting_sent_to" :  FieldValue.arrayUnion([user.id])], forDocument: invitingRef, merge: true)
+                
+                // Commit the batch
+                batch.commit() { err in
+                    if let err = err {
+                        print("Error writing batch \(err)")
+                    } else {
+                        print("Batch write succeeded.")
+                    }
+                }
+            }
+        }
+    }
+    
+    func snapshotUserInvitings(userID: String, completion: @escaping ([String]) -> ()) {
+        userInvitingsListener = self.reference(collectionReference: .users).document(userID).addSnapshotListener { (snapshot, error) in
+            if let error = error {
+                print("Error snapshoting Groups -> \(error.localizedDescription)")
+                return
+            }
+            
+            guard let documentData = snapshot?.data() else { return }
+            let invitings = documentData["groups_inviting"] as? [String] ?? [String]()
+            completion(invitings)
+        }
+    }
+    
+    func removesUserInvitingsListener() {
+        if self.userInvitingsListener != nil {
+            userInvitingsListener.remove()
+        }
+    }
+    
     //MARK: ----------- GROUP CHAT DATA -----------------------
     func createGroupChatMessage(groupID: String, data: [String: Any], completion: @escaping () -> ()) {
         
@@ -182,6 +242,12 @@ class Database {
         documentData["id"] = docID
         batch.setData(documentData, forDocument: messageRef, merge: true)
         
+        
+        let indexRef = self.reference(collectionReference: .chat_groups).document(groupID).collection("messages").document(docID)
+        batch.setData(["index" : FieldValue.increment(Int64(1))], forDocument: indexRef, merge: true)
+        
+        let groupRef = self.reference(collectionReference: .chat_groups).document(groupID)
+        batch.setData(["number_of_messages" : FieldValue.increment(Int64(1))], forDocument: groupRef, merge: true)
         
         // Commit the batch
         batch.commit() { err in
@@ -212,5 +278,41 @@ class Database {
             completion(messages)
         }
     }
+    
+    func updateLastMessageSeenByUser(userID: String, groupID: String, messageIndex: Int) {
+        let batch = self.db.batch()
+        
+        let messageIndexRef = self.reference(collectionReference: .users).document(userID)
+        batch.setData(["last_message_index_seen_on_group" : [groupID: messageIndex]], forDocument: messageIndexRef, merge: true)
+        
+        // Commit the batch
+        batch.commit() { err in
+            if let err = err {
+                print("Error writing batch \(err)")
+            } else {
+                print("Batch write succeeded.")
+            }
+        }
+    }
+    
+    func snapshotLastMessageSeenByUser(userID: String, completion: @escaping ([String: Int]) -> ()) {
+        lastMessageSeenIndexesListener = self.reference(collectionReference: .users).document(userID).addSnapshotListener { (snapshot, error) in
+            if let error = error {
+                print("Error snapshoting Groups -> \(error.localizedDescription)")
+                return
+            }
+            
+            guard let documentData = snapshot?.data() else { return }
+            let lastMessageSeenIndexes = documentData["last_message_index_seen_on_group"] as? [String : Int] ?? [String: Int]()
+            completion(lastMessageSeenIndexes)
+        }
+    }
+    
+    func removesLastMessageSeenIndexesListenerListener() {
+        if self.lastMessageSeenIndexesListener != nil {
+            lastMessageSeenIndexesListener.remove()
+        }
+    }
+    
     
 }

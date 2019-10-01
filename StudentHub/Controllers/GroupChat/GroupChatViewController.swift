@@ -19,6 +19,8 @@ class GroupChatViewController: MessageViewController, UITableViewDataSource, UIT
     let users = ["rnystrom", "BasThomas", "jessesquires", "Sherlouk", "omwomw"]
     var autocompleteUsers = [String]()
     
+    var willStopUpdateMessagesIndexes = false
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.addSideRightMenuButton(menuButton: rightSideMenu)
@@ -142,6 +144,9 @@ class GroupChatViewController: MessageViewController, UITableViewDataSource, UIT
                 )
             }
             
+            if self.willStopUpdateMessagesIndexes != true {
+                Database.service.updateLastMessageSeenByUser(userID: CurrentUser.id, groupID: CurrentUser.activeGroupChat.id, messageIndex: CurrentUser.activeGroupChat.numberOfMessages)
+            }
         }
     }
     
@@ -197,6 +202,12 @@ class GroupChatViewController: MessageViewController, UITableViewDataSource, UIT
         autocompleteUsers = users.filter { word.isEmpty || $0.lowercased().contains(word.lowercased()) }
         controller.show(true)
     }
+    
+    @IBAction func backButtonTapped(_ sender: UIButton) {
+        self.willStopUpdateMessagesIndexes = true
+        self.performSegue(withIdentifier: "unwindToGroups", sender: self)
+    }
+    
     
 }
 

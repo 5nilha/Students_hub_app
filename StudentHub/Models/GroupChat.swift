@@ -27,6 +27,8 @@ struct GroupChat {
     private var _code: String = ""
     private var _isPrivate: Bool = false
     private var _description: String = ""
+    private var _invitingSentTo: [String] = [String]()
+    private var _numberOfMessages: Int = 0
     public var messages = [GroupChatMessage]()
     
     
@@ -139,6 +141,20 @@ struct GroupChat {
         }
     }
     
+    var invitingSentTo: [String] {
+        get {
+            return self._invitingSentTo
+        }
+    }
+    
+    var numberOfMessages: Int {
+        get {
+            return self._numberOfMessages
+        }
+    }
+    
+    
+    
     init() {}
     
     init(group_name: String, adminEmail: String, createdByID: String, createdByName: String, isPrivate: Bool, description: String, groupImage: UIImage) {
@@ -196,6 +212,8 @@ struct GroupChat {
         self._code = json["code"] as? String ?? ""
         self._publicIdentifier = json["public_identifier"] as? String ?? ""
         self._groupImageURL = json["group_image_url"] as? String ?? ""
+        self._invitingSentTo = json["inviting_sent_to"] as? [String] ?? [String]()
+        self._numberOfMessages = json["number_of_messages"] as? Int ?? 0
         
         let members = json["group_members"] as? [[String : Any]] ?? [[String : Any]]()
         
@@ -267,7 +285,9 @@ struct GroupChat {
                 "public_identifier" : self._publicIdentifier,
                 "code" : self._code,
                 "is_private" : self._isPrivate,
-                "description" : self._description]
+                "description" : self._description,
+                "inviting_sent_to" : self._invitingSentTo,
+                "number_of_messages" : self._numberOfMessages]
     }
 
     

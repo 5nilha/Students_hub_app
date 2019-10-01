@@ -15,6 +15,7 @@ class GroupsViewController: UIViewController, UICollectionViewDelegate, UICollec
     @IBOutlet weak var searchbar: UISearchBar!
     @IBOutlet weak var myGroupsCollectionView: UICollectionView!
     @IBOutlet weak var allGroupsCollectionView: UICollectionView!
+    @IBOutlet weak var invitingButtonBadge: UIView!
     var sections = ["MY GROUPS", "ALL GROUPS"]
     
     var myActiveGroups = [GroupChat]()
@@ -30,16 +31,36 @@ class GroupsViewController: UIViewController, UICollectionViewDelegate, UICollec
         self.myGroupsCollectionView.delegate = self
         self.myGroupsCollectionView.dataSource = self
         self.searchbar.delegate = self
+        self.invitingButtonBadge.circle()
+        self.invitingButtonBadge.isHidden = true
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         updateGroups()
+        
+        Database.service.snapshotUserInvitings(userID: CurrentUser.id) { (invitings) in
+            CurrentUser.groupsInviting = invitings
+            if CurrentUser.groupsInviting.count > 0 {
+                self.invitingButtonBadge.isHidden = false
+            }
+            else {
+                self.invitingButtonBadge.isHidden = true
+            }
+        }
+        
+        Database.service.snapshotLastMessageSeenByUser(userID: CurrentUser.id) { (lastMessageSeenIndexes) in
+            CurrentUser.lastMessageIndexSeenOnGroups = lastMessageSeenIndexes
+            print("last index \(lastMessageSeenIndexes)")
+            self.myGroupsCollectionView.reloadData()
+        }
+        
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         Database.service.removesnapshotGroupsListener()
+        Database.service.removesUserInvitingsListener()
     }
     
     func updateGroups() {
@@ -58,6 +79,9 @@ class GroupsViewController: UIViewController, UICollectionViewDelegate, UICollec
     
     @IBAction func createGroupTapped(_ sender: UIButton) {
         self.performSegue(withIdentifier: "goToCreateGroupSegue", sender: self)
+    }
+    
+    @IBAction func invitingsButtonTapped(_ sender: UIButton) {
     }
     
     
@@ -138,11 +162,25 @@ class MyGroupCell: UICollectionViewCell {
         self.groupView.roundCorner(radius: 16)
         self.groupImage.roundCorner(radius: 16)
         self.badgeView.circle()
+        self.badgeView.isHidden = true
     }
     
     func updateView(groupChat: GroupChat) {
         self.groupNameLabel.text = groupChat.groupName
         self.groupImage.image = groupChat.groupImage
+        
+        for data in CurrentUser.lastMessageIndexSeenOnGroups {
+            if data.key == groupChat.id {
+                let lastIndex = data.value
+                print("Index = \(lastIndex)")
+                if groupChat.numberOfMessages > lastIndex {
+                    badgeView.isHidden = false
+                }
+                else {
+                    self.badgeView.isHidden = true
+                }
+            }
+        }
     }
 }
 
