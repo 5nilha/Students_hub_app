@@ -93,6 +93,7 @@ class GroupsViewController: UIViewController, UICollectionViewDelegate, UICollec
     }
     
     @IBAction func invitingsButtonTapped(_ sender: UIButton) {
+        self.performSegue(withIdentifier: "goToInvitings", sender: self)
     }
     
     
@@ -152,6 +153,8 @@ class GroupsViewController: UIViewController, UICollectionViewDelegate, UICollec
             self.performSegue(withIdentifier: "segueToPopup", sender: self)
         }
     }
+    
+    
     
     @IBAction func unwindToGroupsVC(sender: UIStoryboardSegue) {
         

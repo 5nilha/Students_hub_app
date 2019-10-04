@@ -8,18 +8,29 @@
 
 import UIKit
 
-class InvitingGroupViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
-    
+protocol InvitingGroupDelegate {
+    func inviteAnswer()
+}
 
+class InvitingGroupViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, InvitingGroupDelegate {
+    
+    
+    @IBOutlet weak var popUpView: UIView!
     @IBOutlet weak var tableView: UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.tableView.delegate = self
         self.tableView.dataSource = self
+        self.popUpView.roundCorner(radius: 20)
 
         // Do any additional setup after loading the view.
     }
+    
+    func inviteAnswer() {
+        self.tableView.reloadData()
+    }
+    
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return CurrentUser.groupsInviting.count
@@ -28,12 +39,16 @@ class InvitingGroupViewController: UIViewController, UITableViewDelegate, UITabl
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "InvitingGroupCell", for: indexPath) as! InvitingGroupCell
         
-        cell.groupIdentifierLabel.text = CurrentUser.groupsInviting[indexPath.row]
+        cell.delegate = self
+        cell.updateCell(identifier: CurrentUser.groupsInviting[indexPath.row])
         return cell
     }
     
  
-
+    @IBAction func closeButton(_ sender: UIButton) {
+        self.dismiss(animated: true, completion: nil)
+    }
+    
 }
 
 class InvitingGroupCell: UITableViewCell {
@@ -43,6 +58,8 @@ class InvitingGroupCell: UITableViewCell {
     @IBOutlet weak var denyButton: UIButton!
     @IBOutlet weak var acceptButton: UIButton!
     private var groupIdentifier: String!
+    
+    var delegate: InvitingGroupDelegate!
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -60,12 +77,18 @@ class InvitingGroupCell: UITableViewCell {
     @IBAction func acceptButtonTapped(_ sender: UIButton) {
         Database.service.acceptGroupInviting(userID: CurrentUser.id, userName: CurrentUser.fullName, groupIdentifier: groupIdentifier)
         CurrentUser.removeGroupInviting(identifier: groupIdentifier)
+        if delegate != nil {
+            delegate.inviteAnswer()
+        }
         
     }
     
     @IBAction func denyButtonTapped(_ sender: UIButton) {
         Database.service.rejectGroupInviting(userID: CurrentUser.id, groupIdentifier: groupIdentifier)
         CurrentUser.removeGroupInviting(identifier: groupIdentifier)
+        if delegate != nil {
+            delegate.inviteAnswer()
+        }
     }
     
     
