@@ -64,7 +64,10 @@ class EditAvatarViewController: UIViewController, UICollectionViewDelegate, UICo
     
     @IBAction func selectAvatarTapped(_ sender: UIButton) {
         if selectedAvatarID != nil {
-            delegate.updateAvatar(avatarID: selectedAvatarID)
+            if delegate != nil {
+                delegate.updateAvatar(avatarID: selectedAvatarID)
+            }
+            
         }
         self.dismiss(animated: true, completion: nil)
     }

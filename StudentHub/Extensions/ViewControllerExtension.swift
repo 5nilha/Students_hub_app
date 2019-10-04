@@ -40,6 +40,7 @@ extension UIViewController {
         }
     }
     
+    
     func errorAlert(title: String, message: String) {
         let appearance = SCLAlertView.SCLAppearance( showCloseButton: false)
         let alertView = SCLAlertView(appearance: appearance)
@@ -49,6 +50,14 @@ extension UIViewController {
         }
         
         alertView.showError(title, subTitle: message)
+    }
+    
+    
+    func waitView(message: String?, completion: @escaping (SCLAlertView) -> ()) {
+        let appearance = SCLAlertView.SCLAppearance( showCloseButton: false)
+        let alertView = SCLAlertView(appearance: appearance)
+        alertView.showWait("Please Wait", subTitle: message ?? "")
+        completion(alertView)
     }
     
 }

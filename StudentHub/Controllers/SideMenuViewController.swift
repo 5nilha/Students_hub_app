@@ -10,11 +10,9 @@ import UIKit
 
 class SideMenuViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
-    
-    
     @IBOutlet weak var tableView: UITableView!
     
-    let menus = ["Profile", "My Classes", "Settings", "Logout"]
+    let menus = ["Activities", "Profile", "My Classes", "Settings", "Logout"]
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,6 +36,35 @@ class SideMenuViewController: UIViewController, UITableViewDelegate, UITableView
         cell.menuLabel.text = menu
         cell.iconImageview.image = UIImage(named: menu)
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        switch indexPath.row {
+        case 0:
+            performSegue(withIdentifier: "goToActivities", sender: self)
+            break
+        case 1:
+            performSegue(withIdentifier: "goToProfileSegue", sender: self)
+            break
+        case 2:
+            break
+        case 3:
+            
+            break
+        case 4:
+            AppConfig.logout { (error) in
+                if let error = error {
+                    print(error.localizedDescription)
+                }
+                else {
+                    self.performSegue(withIdentifier: "unwindToInitialVC", sender: self)
+                    self.navigationController?.popToRootViewController(animated: true)
+                }
+            }
+            break
+        default:
+            print("unmatched case")
+        }
     }
 
 }

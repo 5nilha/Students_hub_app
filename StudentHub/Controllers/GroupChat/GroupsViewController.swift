@@ -12,6 +12,7 @@ import UIKit
 class GroupsViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UISearchBarDelegate {
     
     
+    @IBOutlet weak var sideMenu: UIButton!
     @IBOutlet weak var searchbar: UISearchBar!
     @IBOutlet weak var myGroupsCollectionView: UICollectionView!
     @IBOutlet weak var allGroupsCollectionView: UICollectionView!
@@ -26,6 +27,7 @@ class GroupsViewController: UIViewController, UICollectionViewDelegate, UICollec
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        addSideMenuButton(menuButton: sideMenu)
         self.allGroupsCollectionView.delegate = self
         self.allGroupsCollectionView.dataSource = self
         self.myGroupsCollectionView.delegate = self
@@ -37,7 +39,9 @@ class GroupsViewController: UIViewController, UICollectionViewDelegate, UICollec
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        updateGroups()
+        self.updateGroups()
+        
+       
         
         Database.service.snapshotUserInvitings(userID: CurrentUser.id) { (invitings) in
             CurrentUser.groupsInviting = invitings
@@ -64,17 +68,24 @@ class GroupsViewController: UIViewController, UICollectionViewDelegate, UICollec
     }
     
     func updateGroups() {
-        //Call database
-        Database.service.snapshotGroups { (groups) in
-            self.allGroups = groups
-            self.allGroupsFiltered = self.allGroups
-            self.allGroupsCollectionView.reloadData()
+        
+        self.waitView(message: "Loading Groups ...") { (waitSpinner) in
+            Database.service.snapshotGroups { (groups) in
+                self.allGroups = groups
+                self.allGroupsFiltered = self.allGroups
+                self.allGroupsCollectionView.reloadData()
+                
+                self.myActiveGroups = groups.filter({ (group) -> Bool in
+                    return group.groupMembersID.contains(CurrentUser.id)
+                })
+                self.myGroupsCollectionView.reloadData()
+                if waitSpinner.isShowing() {
+                    waitSpinner.hideView()
+                }
+            }
             
-            self.myActiveGroups = groups.filter({ (group) -> Bool in
-                return group.groupMembersID.contains(CurrentUser.id)
-            })
-            self.myGroupsCollectionView.reloadData()
         }
+       
     }
     
     @IBAction func createGroupTapped(_ sender: UIButton) {

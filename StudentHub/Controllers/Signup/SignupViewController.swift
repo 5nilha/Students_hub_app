@@ -65,6 +65,7 @@ class SignupViewController: UIViewController {
                     
                 }
                 else {
+                    CurrentUser = newUser
                     self.performSegue(withIdentifier: "goToEditProfileSegue", sender: self)
                 }
             })

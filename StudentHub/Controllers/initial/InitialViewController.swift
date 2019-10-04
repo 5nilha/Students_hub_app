@@ -19,6 +19,7 @@ class InitialViewController: UIViewController {
         self.signupButton.round(radius: 6)
         self.loginButton.round(radius: 6)
         self.loginButton.border(width: 3, color: #colorLiteral(red: 0.01250977442, green: 0.4810960293, blue: 0.8075000644, alpha: 1))
+        self.signupButton.border(width: 3, color: #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0))
 
         // Do any additional setup after loading the view.
     }
@@ -30,6 +31,10 @@ class InitialViewController: UIViewController {
     
     @IBAction func loginButtonTapped(_ sender: UIButton) {
         self.performSegue(withIdentifier: "goToLoginSegue", sender: self)
+    }
+    
+    @IBAction func unwindToInitialVC(Sender: UIStoryboardSegue) {
+        
     }
     
 }

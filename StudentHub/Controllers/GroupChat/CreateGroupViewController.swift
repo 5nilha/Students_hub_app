@@ -20,7 +20,7 @@ class CreateGroupViewController: UIViewController, UICollectionViewDelegate, UIC
     @IBOutlet weak var groupImage: UIImageView!
     @IBOutlet weak var collectionView: UICollectionView!
     
-    let groupImages : [String] = ["8084", "10140", "2380391"]
+    let groupImages : [String] = ["101", "102", "103", "104", "105", "106", "107", "108", "109", "110", "111", "112", "113", "114"]
     var selectedImage : UIImage!
     
     
@@ -49,10 +49,15 @@ class CreateGroupViewController: UIViewController, UICollectionViewDelegate, UIC
         if !groupName.isEmpty && !groupDescription.isEmpty {
             let newGroup = GroupChat(group_name: groupName, adminEmail: CurrentUser.email, createdByID: CurrentUser.id, createdByName: CurrentUser.fullName, isPrivate: isPrivate, description: groupDescription, groupImage: selectedImage)
             
-
-            Database.service.createGroup(image: newGroup.groupImage, data: newGroup.jsonData, completion: {
-                self.dismiss(animated: true, completion: nil)
-            })
+            self.waitView(message: "Creating Group...") { (waitSpinner) in
+                Database.service.createGroup(image: newGroup.groupImage, data: newGroup.jsonData, completion: {
+                    self.dismiss(animated: true, completion: nil)
+                    if waitSpinner.isShowing() {
+                        waitSpinner.hideView()
+                    }
+                })
+            }
+            
             
         }
     }

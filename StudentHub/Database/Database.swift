@@ -81,7 +81,7 @@ class Database: AppConfig {
     }
     
     func snapshotGroups(completion: @escaping ([GroupChat]) -> ()) {
-        groupsChatListener = self.reference(collectionReference: .chat_groups).addSnapshotListener { (snapshot, error) in
+        groupsChatListener = self.reference(collectionReference: .chat_groups).order(by: "group_name").addSnapshotListener { (snapshot, error) in
             if let error = error {
                 print("Error snapshoting Groups -> \(error.localizedDescription)")
                 return

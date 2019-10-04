@@ -8,6 +8,7 @@
 
 import UIKit
 import Firebase
+import SCLAlertView
 
 class LoginViewController: UIViewController {
     
@@ -23,6 +24,7 @@ class LoginViewController: UIViewController {
     }
     
     func loginUser() {
+        
         let email = emailTextField.text ?? ""
         let password = passwordTextField.text ?? ""
         
@@ -35,29 +37,36 @@ class LoginViewController: UIViewController {
             return
         }
         
-        Auth.auth().signIn(withEmail: email, password: password) { (result, error) in
-            if let error = error {
-                self.errorAlert(title: "Error!", message: "\(error.localizedDescription)")
-                print("Error -> \(error.localizedDescription)")
-                return
+        self.waitView(message: "Loading ...") { (waitSpinner) in
+                    Auth.auth().signIn(withEmail: email, password: password) { (result, error) in
+                if let error = error {
+                    self.errorAlert(title: "Error!", message: "\(error.localizedDescription)")
+                    print("Error -> \(error.localizedDescription)")
+                    waitSpinner.hideView()
+                    return
+                }
+                
+                guard let user = result?.user else {
+                    waitSpinner.hideView()
+                    return }
+                
+                var newUser = User()
+                newUser.setNewUser(id: user.uid, email: email)
+                print("Getting User")
+                Database.service.getUser(user_id: newUser.id, completion: { (userData) in
+                    CurrentUser = userData
+                    print("User read")
+                    if CurrentUser.firstName.isEmpty || CurrentUser.lastName.isEmpty {
+                        self.performSegue(withIdentifier: "goToEditProfileSegue", sender: self)
+                    }
+                    else {
+                        self.performSegue(withIdentifier: "goToMapSegue", sender: self)
+                    }
+                    waitSpinner.hideView()
+                })
             }
-            
-            guard let user = result?.user else { return }
-            
-            var newUser = User()
-            newUser.setNewUser(id: user.uid, email: email)
-            print("Getting User")
-            Database.service.getUser(user_id: newUser.id, completion: { (userData) in
-                CurrentUser = userData
-                print("User read")
-                if CurrentUser.firstName.isEmpty || CurrentUser.lastName.isEmpty {
-                    self.performSegue(withIdentifier: "goToEditProfileSegue", sender: self)
-                }
-                else {
-                    self.performSegue(withIdentifier: "goToMapSegue", sender: self)
-                }
-            })
         }
+
         
     }
     

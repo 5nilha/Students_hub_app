@@ -8,66 +8,83 @@
 
 import UIKit
 
-class ProfieViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
+class ProfieViewController: UIViewController, AvatarDelegate {
     
-    @IBOutlet weak var selectedAvatarImageView: UIImageView!
-    @IBOutlet weak var genderSegmentControl: UISegmentedControl!
-    @IBOutlet weak var collectionView: UICollectionView!
-    let female_avatars = ["avatar_4","avatar_5", "avatar_8", "avatar_10"]
+    @IBOutlet weak var sideMenu: UIButton!
     
-    let male_avatar = ["avatar_1", "avatar_2", "avatar_3", "avatar_6", "avatar_7", "avatar_9", "avatar_11"]
+    @IBOutlet weak var firstNameTextField: UITextField!
+    @IBOutlet weak var lastNameTExtField: UITextField!
+    @IBOutlet weak var emailTextField: UITextField!
+    @IBOutlet weak var majorTextField: UITextField!
+    @IBOutlet weak var SchoolTextField: UITextField!
+    @IBOutlet weak var campusTextField: UITextField!
+    @IBOutlet weak var avatarImageView: UIImageView!
     
-    var avatars = [String]()
+    var avatarID: String!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.collectionView.delegate = self
-        self.collectionView.dataSource = self
-        self.genderSegmentControl.selectedSegmentIndex = 0
-        avatars = female_avatars
-
-        // Do any additional setup after loading the view.
+        self.addSideMenuButton(menuButton: sideMenu)
+        self.updateView()
     }
     
+    func updateAvatar(avatarID: String) {
+        self.avatarImageView.image = UIImage(named: avatarID)
+        self.avatarID = avatarID
+       }
+       
     
-    @IBAction func genderSegmentedControlChanged(_ sender: UISegmentedControl) {
-        if sender.selectedSegmentIndex == 0 {
-            avatars = female_avatars
-        }
-        else {
-            avatars = male_avatar
-        }
-        self.collectionView.reloadData()
+    func updateView() {
+        self.avatarImageView.image = UIImage(named: CurrentUser.avatarID)
+        self.firstNameTextField.text = CurrentUser.firstName
+        self.lastNameTExtField.text = CurrentUser.lastName
+        self.emailTextField.text = CurrentUser.email
+        self.majorTextField.text = CurrentUser.major
+        self.SchoolTextField.text = CurrentUser.college
+        self.campusTextField.text = CurrentUser.campus
+        self.avatarID = CurrentUser.avatarID
     }
     
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return avatars.count
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ProfileAvatarCell", for: indexPath) as! ProfileAvatarCell
-        let avatar = avatars[indexPath.row]
-        cell.avatarImageView.image = UIImage(named: avatar)
-        return cell
-    }
-    
-   func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let avatar = avatars[indexPath.row]
-        self.selectedAvatarImageView.image = UIImage(named: avatar)
-//        let cell = collectionView.cellForItem(at: indexPath) as! ProfileAvatarCell
-//        cell.checkedSelectedImage.image = #imageLiteral(resourceName: "checked-2")
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+    func updateProfile() {
         
+        let major = majorTextField.text ?? ""
+        let campus = campusTextField.text ?? ""
+        
+        
+        if major.isEmpty {
+            errorAlert(title: "Error!", message: "Major can't be empty")
+            return
+        }
+        
+        if campus.isEmpty {
+            errorAlert(title: "Error!", message: "School Campus can't be empty")
+            return
+        }
+        
+        CurrentUser.updateUserProfile(firstName: CurrentUser.firstName, lastName: CurrentUser.lastName, avatarID: self.avatarID, major: major, campus: campus)
+        
+        Database.service.updateUser(user_id: CurrentUser.id, data: CurrentUser.dataJson)
+        self.dismiss(animated: true, completion: nil)
     }
-
-
+    
+    @IBAction func updateProfileButtonTapped(_ sender: UIButton) {
+        self.updateProfile()
+    }
+    
+    @IBAction func editAvatarTapped(_ sender: UIButton) {
+        self.performSegue(withIdentifier: "editAvatarSegue", sender: self)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "editAvatarSegue" {
+            let destination = segue.destination as! EditAvatarViewController
+            destination.delegate = self
+        }
+    }
+    @IBAction func backMenuTapped(_ sender: UIButton) {
+//        self.dismiss(animated: true, completion: nil)
+    }
+    
+    
 }
 
-class ProfileAvatarCell: UICollectionViewCell {
-    
-    @IBOutlet weak var avatarImageView: UIImageView!
-
-    
-}

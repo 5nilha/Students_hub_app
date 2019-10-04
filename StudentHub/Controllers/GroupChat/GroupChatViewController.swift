@@ -145,6 +145,8 @@ class GroupChatViewController: MessageViewController, UITableViewDataSource, UIT
             }
             
             if self.willStopUpdateMessagesIndexes != true {
+
+                AppConfig.setNotification(title: "New Message at \((CurrentUser.activeGroupChat.groupName)) Group", message: "" , identifier: "new_message")
                 Database.service.updateLastMessageSeenByUser(userID: CurrentUser.id, groupID: CurrentUser.activeGroupChat.id, messageIndex: CurrentUser.activeGroupChat.numberOfMessages)
             }
         }
