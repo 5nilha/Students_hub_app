@@ -268,6 +268,12 @@ struct GroupChat {
         }
     }
     
+    mutating func removeInviting(userID: String) {
+        if let index = _invitingSentTo.firstIndex(of: userID) {
+            self._invitingSentTo.remove(at: index)
+        }
+    }
+    
     var jsonData : [String: Any] {
         return ["id" : self._id,
                 "group_name" : self._groupName,

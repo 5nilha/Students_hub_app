@@ -231,6 +231,84 @@ class Database: AppConfig {
         }
     }
     
+    func acceptGroupInviting(userID: String, userName: String, groupIdentifier: String) {
+        self.reference(collectionReference: .chat_groups).whereField("public_identifier", isEqualTo: groupIdentifier).getDocuments { (query, error) in
+            if let error = error {
+                print("Error getting Groups -> \(error.localizedDescription)")
+                return
+            }
+            
+            guard let documents = query?.documents else { return }
+            
+            if documents.count > 0 {
+                let document = documents[0]
+                let documentData = document.data()
+                let groupID = documentData["id"] as? String ?? ""
+                if !groupID.isEmpty {
+                    
+                    let batch = self.db.batch()
+                    
+                    let userRef = self.reference(collectionReference: .users).document(userID)
+                    batch.setData(["groups_inviting" :  FieldValue.arrayRemove([groupIdentifier]),
+                                   "last_message_index_seen_on_group" : [groupID : 0]], forDocument: userRef, merge: true)
+                    
+                    let grouprRef = self.reference(collectionReference: .chat_groups).document(groupID)
+                    batch.setData(["inviting_sent_to" :  FieldValue.arrayRemove([userID]),
+                                   "group_members" : FieldValue.arrayUnion([["id" : userID, "name": userName]]),
+                                   "group_members_id" : FieldValue.arrayUnion([userID])], forDocument: grouprRef, merge: true)
+                    
+                    
+                    // Commit the batch
+                    batch.commit() { err in
+                        if let err = err {
+                            print("Error writing batch \(err)")
+                        } else {
+                            print("Batch write succeeded.")
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    func rejectGroupInviting(userID: String, groupIdentifier: String) {
+        self.reference(collectionReference: .chat_groups).whereField("public_identifier", isEqualTo: groupIdentifier).getDocuments { (query, error) in
+            if let error = error {
+                print("Error getting Groups -> \(error.localizedDescription)")
+                return
+            }
+            
+            guard let documents = query?.documents else { return }
+            
+            if documents.count > 0 {
+                let document = documents[0]
+                let documentData = document.data()
+                let groupID = documentData["id"] as? String ?? ""
+                if !groupID.isEmpty {
+                    
+                    let batch = self.db.batch()
+                    
+                    let userRef = self.reference(collectionReference: .users).document(userID)
+                    batch.setData(["groups_inviting" :  FieldValue.arrayRemove([groupIdentifier])], forDocument: userRef, merge: true)
+                    
+                    let grouprRef = self.reference(collectionReference: .chat_groups).document(groupID)
+                    batch.setData(["inviting_sent_to" :  FieldValue.arrayRemove([userID])], forDocument: grouprRef, merge: true)
+                    
+                    
+                    // Commit the batch
+                    batch.commit() { err in
+                        if let err = err {
+                            print("Error writing batch \(err)")
+                        } else {
+                            print("Batch write succeeded.")
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    
     //MARK: ----------- GROUP CHAT DATA -----------------------
     func createGroupChatMessage(groupID: String, data: [String: Any], completion: @escaping () -> ()) {
         

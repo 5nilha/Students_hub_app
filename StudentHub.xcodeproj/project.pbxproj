@@ -17,6 +17,7 @@
 		3E0B1D1A2324E0CC00F9B33D /* TabBarExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E0B1D192324E0CC00F9B33D /* TabBarExtension.swift */; };
 		3E0B1D1C2324E2B300F9B33D /* FeedsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E0B1D1B2324E2B300F9B33D /* FeedsViewController.swift */; };
 		3E0B1D1E2324EE4F00F9B33D /* ProfieViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E0B1D1D2324EE4F00F9B33D /* ProfieViewController.swift */; };
+		3E0D6DBB2347A55E00CC7840 /* InvitingGroupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E0D6DBA2347A55E00CC7840 /* InvitingGroupViewController.swift */; };
 		3E3C75792325B3E8008E3C5E /* SWRevealViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E3C75772325B3E8008E3C5E /* SWRevealViewController.m */; };
 		3E3C757B2325BE72008E3C5E /* ViewControllerExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E3C757A2325BE72008E3C5E /* ViewControllerExtension.swift */; };
 		3E3C757D2325BF3F008E3C5E /* SideMenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E3C757C2325BF3F008E3C5E /* SideMenuViewController.swift */; };
@@ -63,6 +64,7 @@
 		3E0B1D192324E0CC00F9B33D /* TabBarExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarExtension.swift; sourceTree = "<group>"; };
 		3E0B1D1B2324E2B300F9B33D /* FeedsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedsViewController.swift; sourceTree = "<group>"; };
 		3E0B1D1D2324EE4F00F9B33D /* ProfieViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfieViewController.swift; sourceTree = "<group>"; };
+		3E0D6DBA2347A55E00CC7840 /* InvitingGroupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvitingGroupViewController.swift; sourceTree = "<group>"; };
 		3E3C75752325B3E8008E3C5E /* StudentHub-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "StudentHub-Bridging-Header.h"; sourceTree = "<group>"; };
 		3E3C75762325B3E8008E3C5E /* SWRevealViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SWRevealViewController.h; sourceTree = "<group>"; };
 		3E3C75772325B3E8008E3C5E /* SWRevealViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SWRevealViewController.m; sourceTree = "<group>"; };
@@ -226,6 +228,7 @@
 				3ED5B115233D60F9006B478D /* GroupChatRightMenuViewController.swift */,
 				3E6AF0D3234151A2006F48D9 /* GroupSelectionPopupViewController.swift */,
 				3E6AF0D72341CD94006F48D9 /* CreateGroupViewController.swift */,
+				3E0D6DBA2347A55E00CC7840 /* InvitingGroupViewController.swift */,
 			);
 			path = GroupChat;
 			sourceTree = "<group>";
@@ -411,6 +414,7 @@
 				3E0B1D1A2324E0CC00F9B33D /* TabBarExtension.swift in Sources */,
 				3E6AF0D6234160B5006F48D9 /* Button+Extension.swift in Sources */,
 				3E3C757B2325BE72008E3C5E /* ViewControllerExtension.swift in Sources */,
+				3E0D6DBB2347A55E00CC7840 /* InvitingGroupViewController.swift in Sources */,
 				3E6AF0D4234151A2006F48D9 /* GroupSelectionPopupViewController.swift in Sources */,
 				3E6AF0CC233F369B006F48D9 /* GroupChatMessage.swift in Sources */,
 				3ED5B114233D1A29006B478D /* GroupChatViewController.swift in Sources */,

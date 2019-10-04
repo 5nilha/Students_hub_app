@@ -184,6 +184,12 @@ struct User {
         self._avatarID = avatarID
     }
     
+    mutating func removeGroupInviting(identifier: String) {
+        if let index = groupsInviting.firstIndex(of: identifier) {
+            self._groupsInviting.remove(at: index)
+        }  
+    }
+    
     var dataJson : [String: Any]{
         return ["id" : self._id,
                 "first_name" : self._firstName,
