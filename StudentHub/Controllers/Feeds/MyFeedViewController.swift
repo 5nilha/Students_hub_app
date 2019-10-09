@@ -41,6 +41,17 @@ class MyFeedViewController: UIViewController, UITextViewDelegate, UICollectionVi
         }
     }
     
+    func createFeed() {
+        let message = messageTextView.text ?? ""
+        let hasImages = images.count > 0
+        
+        if !message.isEmpty {
+            let feed = Feed(content: message, senderID: CurrentUser.id, senderName: CurrentUser.fullName, senderAvatarID: CurrentUser.avatarID, senderMajor: CurrentUser.major, isImage: hasImages, images: images)
+            Database.service.createFeed(images: feed.images, data: feed.dataJson)
+            self.dismiss(animated: true, completion: nil)
+        }
+    }
+    
     
     @IBAction func addPhotoTapped(_ sender: UIButton) {
         self.imagePickerController.delegate = self

@@ -410,4 +410,54 @@ class Database: AppConfig {
     }
     
     
+    //MARK: ----------- FEEDS DATA -----------------------
+    
+    func createFeed(images: [UIImage], data: [String: Any]) {
+        var documentData = data
+        
+        let batch = self.db.batch()
+        
+        let feedRef = self.reference(collectionReference: .feeds).document()
+        let docID = feedRef.documentID
+        documentData["id"] = docID
+        
+    
+        DatabaseStorage.service.storingFeedImages(feed_id: docID, images: images) { (URLs) in
+            documentData["images_url"] = URLs
+            batch.setData(documentData, forDocument: feedRef, merge: true)
+            
+            // Commit the batch
+            batch.commit() { err in
+                if let err = err {
+                    print("Error writing batch \(err)")
+                } else {
+                    print("Batch write succeeded.")
+                }
+            }
+        }
+    }
+    
+    func snapshotFeeds(completion: @escaping ([Feed]) -> ()) {
+        self.reference(collectionReference: .feeds).order(by: "date", descending: false).addSnapshotListener { (snapshot, error) in
+            if let error = error {
+                print("Error snapshoting Feeds -> \(error.localizedDescription)")
+                return
+            }
+            
+            guard let documents = snapshot?.documents else { return }
+            
+            var feeds = [Feed]()
+            
+            for document in documents {
+                var feed = Feed()
+                feed.initializeFromJSON(json: document.data()) { (images) in
+                    feed.images = images
+                    feeds.append(feed)
+                    completion(feeds)
+                }
+            }
+            
+        }
+    }
+    
 }

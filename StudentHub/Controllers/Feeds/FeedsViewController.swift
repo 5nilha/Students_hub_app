@@ -15,20 +15,29 @@ class FeedsViewController: UIViewController, UITableViewDelegate, UITableViewDat
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var topMenu: UIButton!
     
+    var feeds = [Feed]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         self.tableView.delegate = self
         self.tableView.dataSource = self
         self.addSideMenuButton(menuButton: topMenu)
-
+        self.readFeeds()
     }
+    
+    func readFeeds() {
+        Database.service.snapshotFeeds { [unowned self] (feeds) in
+            self.feeds = feeds
+            self.tableView.reloadData()
+        }
+    }
+    
     @IBAction func addFeedTapped(_ sender: UIButton) {
         self.performSegue(withIdentifier: "goToWriteFeedSegue", sender: self)
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 10
+        return feeds.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

@@ -12,4 +12,5 @@ enum DataCollectionReference: String {
     
     case users
     case chat_groups
+    case feeds
 }
