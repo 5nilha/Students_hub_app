@@ -25,6 +25,10 @@ class GroupsViewController: UIViewController, UICollectionViewDelegate, UICollec
 
     var selectedGroup: GroupChat!
     
+    deinit {
+        print("Deinitialize View Controller")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         addSideMenuButton(menuButton: sideMenu)
@@ -43,7 +47,7 @@ class GroupsViewController: UIViewController, UICollectionViewDelegate, UICollec
         
        
         
-        Database.service.snapshotUserInvitings(userID: CurrentUser.id) { (invitings) in
+        Database.service.snapshotUserInvitings(userID: CurrentUser.id) { [unowned self] (invitings) in
             CurrentUser.groupsInviting = invitings
             if CurrentUser.groupsInviting.count > 0 {
                 self.invitingButtonBadge.isHidden = false
@@ -53,7 +57,7 @@ class GroupsViewController: UIViewController, UICollectionViewDelegate, UICollec
             }
         }
         
-        Database.service.snapshotLastMessageSeenByUser(userID: CurrentUser.id) { (lastMessageSeenIndexes) in
+        Database.service.snapshotLastMessageSeenByUser(userID: CurrentUser.id) { [unowned self] (lastMessageSeenIndexes) in
             CurrentUser.lastMessageIndexSeenOnGroups = lastMessageSeenIndexes
             print("last index \(lastMessageSeenIndexes)")
             self.myGroupsCollectionView.reloadData()
@@ -70,15 +74,13 @@ class GroupsViewController: UIViewController, UICollectionViewDelegate, UICollec
     func updateGroups() {
         
         self.waitView(message: "Loading Groups ...") { (waitSpinner) in
-            Database.service.snapshotGroups { (groups) in
-                self.allGroups = groups
-                self.allGroupsFiltered = self.allGroups
-                self.allGroupsCollectionView.reloadData()
+            Database.service.snapshotGroups { [unowned self] (groupsDic) in
                 
-                self.myActiveGroups = groups.filter({ (group) -> Bool in
-                    return group.groupMembersID.contains(CurrentUser.id)
-                })
+                self.allGroups = groupsDic["allGroups"] ?? []
+                self.allGroupsFiltered = self.allGroups
+                self.myActiveGroups = groupsDic["myActiveGroups"] ?? []
                 self.myGroupsCollectionView.reloadData()
+                 self.allGroupsCollectionView.reloadData()
                 if waitSpinner.isShowing() {
                     waitSpinner.hideView()
                 }

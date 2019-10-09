@@ -18,5 +18,7 @@ target 'StudentHub' do
     pod 'MapboxNavigation'
     pod 'MessageViewController'
     pod 'SCLAlertView'
+    pod 'IQKeyboardManagerSwift'
+    pod 'ImagePicker'
 
 end

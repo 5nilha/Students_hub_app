@@ -9,6 +9,7 @@
 import UIKit
 import Firebase
 import RadarSDK
+import IQKeyboardManagerSwift
 
 
 @UIApplicationMain
@@ -24,6 +25,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let publishableKey = "prj_live_pk_b7fb40fedad57d7fc738de5ee579929a401d7d43"
         Radar.initialize(publishableKey: publishableKey)
         
+        IQKeyboardManager.shared.enable = true
         
         return true
     }

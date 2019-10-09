@@ -49,13 +49,13 @@ class CreateGroupViewController: UIViewController, UICollectionViewDelegate, UIC
         if !groupName.isEmpty && !groupDescription.isEmpty {
             let newGroup = GroupChat(group_name: groupName, adminEmail: CurrentUser.email, createdByID: CurrentUser.id, createdByName: CurrentUser.fullName, isPrivate: isPrivate, description: groupDescription, groupImage: selectedImage)
             
-            self.waitView(message: "Creating Group...") { (waitSpinner) in
-                Database.service.createGroup(image: newGroup.groupImage, data: newGroup.jsonData, completion: {
-                    self.dismiss(animated: true, completion: nil)
-                    if waitSpinner.isShowing() {
-                        waitSpinner.hideView()
-                    }
-                })
+            
+            self.waitView(message: "Creating Group...") { [unowned self] (waitSpinner) in
+                Database.service.createGroup(image: newGroup.groupImage, data: newGroup.jsonData)
+                self.dismiss(animated: true, completion: nil)
+                if waitSpinner.isShowing() {
+                    waitSpinner.hideView()
+                }
             }
             
             

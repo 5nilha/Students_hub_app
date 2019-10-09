@@ -13,7 +13,6 @@ class FeedsViewController: UIViewController, UITableViewDelegate, UITableViewDat
     
     
     @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var shareEditionView: UIView!
     @IBOutlet weak var topMenu: UIButton!
     
 
@@ -21,12 +20,11 @@ class FeedsViewController: UIViewController, UITableViewDelegate, UITableViewDat
         super.viewDidLoad()
         self.tableView.delegate = self
         self.tableView.dataSource = self
-        self.shareEditionView.isHidden = true
         self.addSideMenuButton(menuButton: topMenu)
 
     }
     @IBAction func addFeedTapped(_ sender: UIButton) {
-        self.shareEditionView.isHidden = false
+        self.performSegue(withIdentifier: "goToWriteFeedSegue", sender: self)
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -38,6 +36,8 @@ class FeedsViewController: UIViewController, UITableViewDelegate, UITableViewDat
         
         return cell
     }
+    
+    
 
 
 }

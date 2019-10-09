@@ -41,7 +41,7 @@ class SignupViewController: UIViewController {
             return
         }
         
-        Auth.auth().createUser(withEmail: email, password: password) { (result, error) in
+        Auth.auth().createUser(withEmail: email, password: password) { [unowned self] (result, error) in
             if let error = error {
                 self.errorAlert(title: "Error!", message: "\(error.localizedDescription)")
                 print("Error -> \(error.localizedDescription)")
@@ -51,7 +51,7 @@ class SignupViewController: UIViewController {
             
             var newUser = User()
             newUser.setNewUser(id: user.uid, email: email)
-            Database.service.createUser(user_id: newUser.id, data: newUser.dataJson, completion: { (error) in
+            Database.service.createUser(user_id: newUser.id, data: newUser.dataJson, completion: { [unowned self] (error) in
                 if error != nil {
                     user.delete(completion: { (error) in
                         if error != nil {

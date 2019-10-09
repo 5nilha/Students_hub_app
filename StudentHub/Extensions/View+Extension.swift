@@ -24,4 +24,9 @@ extension UIView {
         layer.shadowOffset = CGSize(width: shadowOffset_x, height: shadowOffset_y)
         layer.shadowRadius = CGFloat(shadowRadius)
     }
+    
+    func setBorder(width: Float, color: UIColor) {
+        layer.borderColor = color.cgColor
+        layer.borderWidth = CGFloat(width)
+    }
 }

@@ -27,7 +27,7 @@ class GroupChatRightMenuViewController: UIViewController, UITableViewDelegate, U
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.updateView()
-        Database.service.snapshotMemberOnline(groupID: CurrentUser.activeGroupChat.id) { (membersID) in
+        Database.service.snapshotMemberOnline(groupID: CurrentUser.activeGroupChat.id) { [unowned self] (membersID) in
             CurrentUser.activeGroupChat.membersOnline = membersID
             self.tableView.reloadData()
         }

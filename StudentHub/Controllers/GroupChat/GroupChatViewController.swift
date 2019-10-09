@@ -21,6 +21,11 @@ class GroupChatViewController: MessageViewController, UITableViewDataSource, UIT
     
     var willStopUpdateMessagesIndexes = false
     
+    
+    deinit {
+        print("Deinitializing View Controller")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.addSideRightMenuButton(menuButton: rightSideMenu)
@@ -67,6 +72,7 @@ class GroupChatViewController: MessageViewController, UITableViewDataSource, UIT
         
         setup(scrollView: tableView)
         
+        willStopUpdateMessagesIndexes = true
         self.updateView()
         
         NotificationCenter.default.addObserver(self,
@@ -83,13 +89,10 @@ class GroupChatViewController: MessageViewController, UITableViewDataSource, UIT
                                                selector: #selector(applicationWillEnterForeground),
                                                name: UIApplication.willEnterForegroundNotification,
                                                object: nil)
-        
-        
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -119,9 +122,8 @@ class GroupChatViewController: MessageViewController, UITableViewDataSource, UIT
         let newMessage = GroupChatMessage(senderID: CurrentUser.id, senderName: CurrentUser.fullName, senderAvatarID: CurrentUser.avatarID, senderMajor: CurrentUser.major, messageString: messageView.text, groupId: CurrentUser.activeGroupChat.id)
         
         
-        Database.service.createGroupChatMessage(groupID: newMessage.groupId, data: newMessage.jsonData) {
-            self.messageView.text = ""
-        }
+        Database.service.createGroupChatMessage(groupID: newMessage.groupId, data: newMessage.jsonData)
+        self.messageView.text = ""
     }
     
     
@@ -132,7 +134,7 @@ class GroupChatViewController: MessageViewController, UITableViewDataSource, UIT
     }
     
     func readMessages() {
-        Database.service.snapshotChatMessages(groupID: CurrentUser.activeGroupChat.id) { (messages) in
+        Database.service.snapshotChatMessages(groupID: CurrentUser.activeGroupChat.id) { [unowned self] (messages) in
             CurrentUser.activeGroupChat.messages = messages
             self.tableView.reloadData()
             let messageCount = CurrentUser.activeGroupChat.messages.count
@@ -206,7 +208,7 @@ class GroupChatViewController: MessageViewController, UITableViewDataSource, UIT
     }
     
     @IBAction func backButtonTapped(_ sender: UIButton) {
-        self.willStopUpdateMessagesIndexes = true
+        self.willStopUpdateMessagesIndexes = false
         self.performSegue(withIdentifier: "unwindToGroups", sender: self)
     }
     

@@ -54,7 +54,7 @@ class Database: AppConfig {
     }
     
     //MARK: ----------- GROUPS DATA -----------------------
-    func createGroup(image: UIImage, data: [String: Any], completion: @escaping () -> ()) {
+    func createGroup(image: UIImage, data: [String: Any]) {
         
         var documentData = data
         
@@ -75,12 +75,11 @@ class Database: AppConfig {
                 } else {
                     print("Batch write succeeded.")
                 }
-                completion()
             }
         }
     }
     
-    func snapshotGroups(completion: @escaping ([GroupChat]) -> ()) {
+    func snapshotGroups(completion: @escaping ([String : [GroupChat]]) -> ()) {
         groupsChatListener = self.reference(collectionReference: .chat_groups).order(by: "group_name").addSnapshotListener { (snapshot, error) in
             if let error = error {
                 print("Error snapshoting Groups -> \(error.localizedDescription)")
@@ -90,14 +89,33 @@ class Database: AppConfig {
             guard let documents = snapshot?.documents else { return }
             
             var groups = [GroupChat]()
+            var myActiveGroups = [GroupChat]()
+            let count = documents.count
+            print("COUNT before \(count)")
+            
+            var i = 0
             for document in documents {
                 var group = GroupChat()
                 group.initializeFromJson(json: document.data(), completion: { (image) in
                     group.groupImage = image
                     groups.append(group)
-                    completion(groups)
+                    if group.groupMembersID.contains(CurrentUser.id) {
+                        myActiveGroups.append(group)
+                    }
+                    
+                    i += 1
+                    
+                    print("COUNT after \(i)")
+                    if count == i {
+                        var groupsDic = [String : [GroupChat]]()
+                        groupsDic["myActiveGroups"] = myActiveGroups
+                        groupsDic["allGroups"] = groups
+                        
+                        completion(groupsDic)
+                    }
                 })
             }
+            
         }
     }
     
@@ -310,7 +328,7 @@ class Database: AppConfig {
     
     
     //MARK: ----------- GROUP CHAT DATA -----------------------
-    func createGroupChatMessage(groupID: String, data: [String: Any], completion: @escaping () -> ()) {
+    func createGroupChatMessage(groupID: String, data: [String: Any]) {
         
         var documentData = data
         
@@ -334,7 +352,6 @@ class Database: AppConfig {
             } else {
                 print("Batch write succeeded.")
             }
-            completion()
         }
     }
     

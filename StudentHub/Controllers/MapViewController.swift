@@ -23,7 +23,11 @@ class MapViewController: UIViewController, CLLocationManagerDelegate  {
     @IBOutlet weak var topMenu: UIButton!
     
     var parkedCarCoordinates: CLLocationCoordinate2D!
-    var locationManager: CLLocationManager!
+    weak var locationManager: CLLocationManager!
+    
+    deinit {
+        print("Deinitializing viewController")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -40,7 +44,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate  {
         self.mapView.styleURL = NSURL(string: "mapbox://styles/thestudenthub/ck0aj1o902w721cn8083fudcw")! as URL
         self.mapView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         mapView.camera = MGLMapCamera(lookingAtCenter: CLLocationCoordinate2D(latitude: 28.553669, longitude: -81.251474), altitude: 600, pitch: 80, heading: 1)
-        self.setLocationAuthorization()
+//        self.setLocationAuthorization()
     }
     
     func setLocationAuthorization() {
@@ -56,7 +60,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate  {
             break
         case .authorizedWhenInUse:
             self.locationManagerView.isHidden = true
-            Radar.trackOnce(completionHandler: { (status: RadarStatus, location: CLLocation?, events: [RadarEvent]?, user: RadarUser?) in
+            Radar.trackOnce(completionHandler: { [unowned self] (status: RadarStatus, location: CLLocation?, events: [RadarEvent]?, user: RadarUser?) in
                 // do something with status, location, events, user
             })
             break
@@ -79,8 +83,10 @@ class MapViewController: UIViewController, CLLocationManagerDelegate  {
         if let locationManager = self.locationManager {
             if let userLocation = locationManager.location {
                 if let parkedCarCoordinates = self.parkedCarCoordinates {
-                    self.BuildPolyline(destination: parkedCarCoordinates, user_location: userLocation.coordinate) {
+                    self.BuildPolyline(destination: parkedCarCoordinates, user_location: userLocation.coordinate) { [unowned self] (error) in
+                        
                     }
+                    
                 }
             }
         }
@@ -178,7 +184,9 @@ extension MapViewController {
 }
 
 extension MapViewController: MGLMapViewDelegate {
-    
+    func mapView(_ mapView: MGLMapView, didFinishLoading style: MGLStyle) {
+        self.setLocationAuthorization()
+    }
 }
 
 //------------------------------- MONITORING RADAR GEOFENCINGS ------------------------------
@@ -191,14 +199,15 @@ extension MapViewController: RadarDelegate {
 
 //------------------------------- CREATING POLYLINE ------------------------------
 extension MapViewController {
-    func BuildPolyline(destination: CLLocationCoordinate2D, user_location: CLLocationCoordinate2D,  completion: @escaping () -> ()) {
+    func BuildPolyline(destination: CLLocationCoordinate2D, user_location: CLLocationCoordinate2D,  completion: @escaping (Error?) -> ()) {
         
         calculateRoute(from: user_location, to: destination) { (route, error) in
             if let error = error {
                 print("ERROR -> \(error.localizedDescription)")
+                completion(error)
                 return
             }
-            completion()
+            completion(nil)
         }
     }
     
@@ -211,9 +220,9 @@ extension MapViewController {
         
         let options = NavigationRouteOptions(waypoints: [origin, destination], profileIdentifier: .automobile)
         
-        let directions = Directions.shared.calculate(options, completionHandler: { (Waypoints, routes, error) in
+        _ = Directions.shared.calculate(options, completionHandler: { [unowned self] (Waypoints, routes, error) in
             
-            if let error = error {
+            if error != nil {
                 print("Polyline error")
                 return
             }
@@ -243,10 +252,6 @@ extension MapViewController {
         
         if let routeCoordinates = route.coordinates {
             let polyline = MGLPolylineFeature(coordinates: routeCoordinates, count: route.coordinateCount)
-            
-            if let mapStyle = mapView.style {
-                let source = mapStyle.source(withIdentifier: "route-source") as? MGLShapeSource
-            }
             
             if let source = mapView.style?.source(withIdentifier: "route-source") as? MGLShapeSource {
                 source.shape = polyline

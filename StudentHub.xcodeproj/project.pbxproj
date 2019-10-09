@@ -18,6 +18,8 @@
 		3E0B1D1C2324E2B300F9B33D /* FeedsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E0B1D1B2324E2B300F9B33D /* FeedsViewController.swift */; };
 		3E0B1D1E2324EE4F00F9B33D /* ProfieViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E0B1D1D2324EE4F00F9B33D /* ProfieViewController.swift */; };
 		3E0D6DBB2347A55E00CC7840 /* InvitingGroupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E0D6DBA2347A55E00CC7840 /* InvitingGroupViewController.swift */; };
+		3E0D6DBD234D9B6500CC7840 /* Feed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E0D6DBC234D9B6500CC7840 /* Feed.swift */; };
+		3E0D6DC0234DA40700CC7840 /* MyFeedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E0D6DBF234DA40700CC7840 /* MyFeedViewController.swift */; };
 		3E3C75792325B3E8008E3C5E /* SWRevealViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E3C75772325B3E8008E3C5E /* SWRevealViewController.m */; };
 		3E3C757B2325BE72008E3C5E /* ViewControllerExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E3C757A2325BE72008E3C5E /* ViewControllerExtension.swift */; };
 		3E3C757D2325BF3F008E3C5E /* SideMenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E3C757C2325BF3F008E3C5E /* SideMenuViewController.swift */; };
@@ -65,6 +67,8 @@
 		3E0B1D1B2324E2B300F9B33D /* FeedsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedsViewController.swift; sourceTree = "<group>"; };
 		3E0B1D1D2324EE4F00F9B33D /* ProfieViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfieViewController.swift; sourceTree = "<group>"; };
 		3E0D6DBA2347A55E00CC7840 /* InvitingGroupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvitingGroupViewController.swift; sourceTree = "<group>"; };
+		3E0D6DBC234D9B6500CC7840 /* Feed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Feed.swift; sourceTree = "<group>"; };
+		3E0D6DBF234DA40700CC7840 /* MyFeedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyFeedViewController.swift; sourceTree = "<group>"; };
 		3E3C75752325B3E8008E3C5E /* StudentHub-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "StudentHub-Bridging-Header.h"; sourceTree = "<group>"; };
 		3E3C75762325B3E8008E3C5E /* SWRevealViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SWRevealViewController.h; sourceTree = "<group>"; };
 		3E3C75772325B3E8008E3C5E /* SWRevealViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SWRevealViewController.m; sourceTree = "<group>"; };
@@ -170,12 +174,12 @@
 		3E0B1D122324CC1A00F9B33D /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				3E0D6DBE234DA3E800CC7840 /* Feeds */,
 				3E6AF0E923429D46006F48D9 /* login */,
 				3E6AF0E4234298B9006F48D9 /* initial */,
 				3E6AF0DB234287CC006F48D9 /* Signup */,
 				3E6AF0D223415151006F48D9 /* GroupChat */,
 				3E0B1D132324CC3100F9B33D /* MapViewController.swift */,
-				3E0B1D1B2324E2B300F9B33D /* FeedsViewController.swift */,
 				3E0B1D1D2324EE4F00F9B33D /* ProfieViewController.swift */,
 				3E3C757C2325BF3F008E3C5E /* SideMenuViewController.swift */,
 				3E3C757E2325E759008E3C5E /* MessagingChatViewController.swift */,
@@ -191,6 +195,7 @@
 				3E6AF0CB233F369B006F48D9 /* GroupChatMessage.swift */,
 				3E6AF0D023402335006F48D9 /* GroupChat.swift */,
 				3E6AF0D92341D249006F48D9 /* User.swift */,
+				3E0D6DBC234D9B6500CC7840 /* Feed.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -208,6 +213,15 @@
 				3EC9ACE62342F449003CDD09 /* Calendar+Extension.swift */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		3E0D6DBE234DA3E800CC7840 /* Feeds */ = {
+			isa = PBXGroup;
+			children = (
+				3E0B1D1B2324E2B300F9B33D /* FeedsViewController.swift */,
+				3E0D6DBF234DA40700CC7840 /* MyFeedViewController.swift */,
+			);
+			path = Feeds;
 			sourceTree = "<group>";
 		};
 		3E3C75742325B3D4008E3C5E /* External_APIs */ = {
@@ -422,6 +436,7 @@
 				3E3C75792325B3E8008E3C5E /* SWRevealViewController.m in Sources */,
 				3E0B1D142324CC3100F9B33D /* MapViewController.swift in Sources */,
 				3E0B1D182324D52400F9B33D /* MyCustomPointAnnotation.swift in Sources */,
+				3E0D6DC0234DA40700CC7840 /* MyFeedViewController.swift in Sources */,
 				3E6AF0EB23429D6A006F48D9 /* LoginViewController.swift in Sources */,
 				3ED5B118233D8DE0006B478D /* CircleView.swift in Sources */,
 				3EC9ACE72342F449003CDD09 /* Calendar+Extension.swift in Sources */,
@@ -432,6 +447,7 @@
 				3E6AF0E323429123006F48D9 /* DataCollectionReference.swift in Sources */,
 				3E0B1D012324626A00F9B33D /* AppDelegate.swift in Sources */,
 				3E6AF0DD234287F1006F48D9 /* SignupViewController.swift in Sources */,
+				3E0D6DBD234D9B6500CC7840 /* Feed.swift in Sources */,
 				3E3C757D2325BF3F008E3C5E /* SideMenuViewController.swift in Sources */,
 				3E6AF0E123429076006F48D9 /* Database.swift in Sources */,
 				3E476AD12343EB1000859FCA /* AppConfig.swift in Sources */,

@@ -37,8 +37,8 @@ class LoginViewController: UIViewController {
             return
         }
         
-        self.waitView(message: "Loading ...") { (waitSpinner) in
-                    Auth.auth().signIn(withEmail: email, password: password) { (result, error) in
+        self.waitView(message: "Loading ...") { [unowned self] (waitSpinner) in
+                    Auth.auth().signIn(withEmail: email, password: password) { [unowned self] (result, error) in
                 if let error = error {
                     self.errorAlert(title: "Error!", message: "\(error.localizedDescription)")
                     print("Error -> \(error.localizedDescription)")
@@ -53,7 +53,7 @@ class LoginViewController: UIViewController {
                 var newUser = User()
                 newUser.setNewUser(id: user.uid, email: email)
                 print("Getting User")
-                Database.service.getUser(user_id: newUser.id, completion: { (userData) in
+                Database.service.getUser(user_id: newUser.id, completion: { [unowned self] (userData) in
                     CurrentUser = userData
                     print("User read")
                     if CurrentUser.firstName.isEmpty || CurrentUser.lastName.isEmpty {

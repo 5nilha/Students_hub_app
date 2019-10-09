@@ -24,12 +24,16 @@
 	<string>pk.eyJ1IjoidGhlc3R1ZGVudGh1YiIsImEiOiJjazBhaHdreG8wMGJ3M2ltempuNDAxaHkyIn0.6qV5IOgBvZcIbl0n0AcNaA</string>
 	<key>MGLMapboxMetricsEnabledSettingShownInApp</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string> App would like to access your camera to take photos for your post. Your photos wont be shared without your permission.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string> App would like to access your camera to share photos in your post. Your photos wont be shared without your permission.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>App requires to access your location to show your location and access where you parked your car. Your location won't be shared  or accessed without permission. 'Always on Location' allows your location to show on the map and ensures features working properly. Choosing'Only While Using the App' will stop features and location from working properly.</string>
+	<string>App requires to access your location to show your location and access where you parked your car. Your location won&apos;t be shared  or accessed without permission. &apos;Always on Location&apos; allows your location to show on the map and ensures features working properly. Choosing&apos;Only While Using the App&apos; will stop features and location from working properly.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>App requires to access your location to show your location and access where you parked your car. Your location won't be shared  or accessed without permission. 'Always on Location' allows your location to show on the map and ensures features working properly.</string>
+	<string>App requires to access your location to show your location and access where you parked your car. Your location won&apos;t be shared  or accessed without permission. &apos;Always on Location&apos; allows your location to show on the map and ensures features working properly.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>App requires to access your location to show your location and access where you parked your car. Your location won't be shared  or accessed without permission. Choosing'Only While Using the App' will stop features and location from working properly when the app goes to background.</string>
+	<string>App requires to access your location to show your location and access where you parked your car. Your location won&apos;t be shared  or accessed without permission. Choosing&apos;Only While Using the App&apos; will stop features and location from working properly when the app goes to background.</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

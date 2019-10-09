@@ -36,7 +36,7 @@ class DatabaseStorage {
         
         
         let metaData = StorageMetadata()
-        guard let imageData = image.jpegData(compressionQuality: 0.3) else { return }
+        guard let imageData = image.jpegData(compressionQuality: 0.05) else { return }
         metaData.contentType = "image/jpg"
         
       
