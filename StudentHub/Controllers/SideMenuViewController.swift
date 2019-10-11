@@ -49,7 +49,7 @@ class SideMenuViewController: UIViewController, UITableViewDelegate, UITableView
         case 2:
             break
         case 3:
-            
+            performSegue(withIdentifier: "goToSettings", sender: self)
             break
         case 4:
             AppConfig.logout { (error) in

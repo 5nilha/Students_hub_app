@@ -90,7 +90,7 @@ struct Feed {
         self._images = images
     }
     
-    mutating func initializeFromJSON(json: [String: Any], completion: @escaping ([UIImage]) -> () ) {
+    mutating func initializeFromJSON(json: [String: Any]) {
         self._id = json["id"] as? String ?? ""
         self._content = json["content"] as? String ?? ""
         self._senderID = json["sender_id"] as? String ?? ""
@@ -99,12 +99,7 @@ struct Feed {
         self._senderMajor = json["sender_major"] as? String ?? ""
         self._isImage = json["is_image"] as? Bool ?? false
         self._date = json["date"] as? Date ?? Date()
-        self._imagesURL = json["images_url"] as? [String] ?? [String]()
-        
-        
-        DatabaseStorage.service.loadImagesFromStorage(urls: _imagesURL, handler: { (images) in
-            completion(images)
-        })
+        self._imagesURL = json["images_url"] as? [String] ?? [String]()    
     }
     
     var dataJson: [String : Any] {

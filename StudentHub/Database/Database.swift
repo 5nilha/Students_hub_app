@@ -438,7 +438,7 @@ class Database: AppConfig {
     }
     
     func snapshotFeeds(completion: @escaping ([Feed]) -> ()) {
-        self.reference(collectionReference: .feeds).order(by: "date", descending: false).addSnapshotListener { (snapshot, error) in
+        self.reference(collectionReference: .feeds).order(by: "date", descending: true).addSnapshotListener { (snapshot, error) in
             if let error = error {
                 print("Error snapshoting Feeds -> \(error.localizedDescription)")
                 return
@@ -450,11 +450,20 @@ class Database: AppConfig {
             
             for document in documents {
                 var feed = Feed()
-                feed.initializeFromJSON(json: document.data()) { (images) in
-                    feed.images = images
+                feed.initializeFromJSON(json: document.data())
+                
+                if feed.imagesURL.count > 0 {
+                    DatabaseStorage.service.loadImagesFromStorage(urls: feed.imagesURL, handler: { (images) in
+                        feed.images = images
+                        feeds.append(feed)
+                        completion(feeds)
+                    })
+                }
+                else {
                     feeds.append(feed)
                     completion(feeds)
                 }
+                
             }
             
         }

@@ -45,10 +45,13 @@ class MyFeedViewController: UIViewController, UITextViewDelegate, UICollectionVi
         let message = messageTextView.text ?? ""
         let hasImages = images.count > 0
         
-        if !message.isEmpty {
+        if message.isEmpty && hasImages == false {
+            return
+        }
+        else {
             let feed = Feed(content: message, senderID: CurrentUser.id, senderName: CurrentUser.fullName, senderAvatarID: CurrentUser.avatarID, senderMajor: CurrentUser.major, isImage: hasImages, images: images)
             Database.service.createFeed(images: feed.images, data: feed.dataJson)
-            self.dismiss(animated: true, completion: nil)
+            navigationController?.popViewController(animated: true)
         }
     }
     
@@ -59,6 +62,14 @@ class MyFeedViewController: UIViewController, UITextViewDelegate, UICollectionVi
         present(imagePickerController, animated: true, completion: nil)
     }
     
+    
+    @IBAction func postButtonTapped(_ sender: UIButton) {
+        createFeed()
+    }
+    
+    @IBAction func backButonTapped(_ sender: UIButton) {
+        navigationController?.popViewController(animated: true)
+    }
     
     //MARK: -> Collection View Methods
     
