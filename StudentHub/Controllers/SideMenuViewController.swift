@@ -12,7 +12,7 @@ class SideMenuViewController: UIViewController, UITableViewDelegate, UITableView
     
     @IBOutlet weak var tableView: UITableView!
     
-    let menus = ["Activities", "Profile", "My Classes", "Settings", "Logout"]
+    let menus = ["Activities", "Profile", "Settings", "Logout"]
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -47,11 +47,9 @@ class SideMenuViewController: UIViewController, UITableViewDelegate, UITableView
             performSegue(withIdentifier: "goToProfileSegue", sender: self)
             break
         case 2:
-            break
-        case 3:
             performSegue(withIdentifier: "goToSettings", sender: self)
             break
-        case 4:
+        case 3:
             AppConfig.logout { (error) in
                 if let error = error {
                     print(error.localizedDescription)

@@ -9,6 +9,7 @@
 import Foundation
 import SCLAlertView
 import Firebase
+import UserNotifications
 
 class AppConfig {
     

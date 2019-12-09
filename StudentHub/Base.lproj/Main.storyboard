@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15400" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="DiM-1v-uIu">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="DiM-1v-uIu">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15404"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15510"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="Stack View standard spacing" minToolsVersion="9.0"/>
         <capability name="collection view cell content view" minToolsVersion="11.0"/>
@@ -375,17 +375,17 @@
                                                             <rect key="frame" x="0.0" y="0.0" width="414" height="60"/>
                                                             <subviews>
                                                                 <stackView opaque="NO" contentMode="scaleToFill" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="3md-dr-ZIh">
-                                                                    <rect key="frame" x="10" y="10" width="95" height="40"/>
+                                                                    <rect key="frame" x="10" y="20" width="75" height="20"/>
                                                                     <subviews>
                                                                         <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="f2M-Pm-HEp">
-                                                                            <rect key="frame" x="0.0" y="0.0" width="40" height="40"/>
+                                                                            <rect key="frame" x="0.0" y="0.0" width="20" height="20"/>
                                                                             <constraints>
-                                                                                <constraint firstAttribute="height" constant="40" id="LHu-fN-OWe"/>
-                                                                                <constraint firstAttribute="width" constant="40" id="i6v-A0-hyo"/>
+                                                                                <constraint firstAttribute="height" constant="20" id="LHu-fN-OWe"/>
+                                                                                <constraint firstAttribute="width" constant="20" id="i6v-A0-hyo"/>
                                                                             </constraints>
                                                                         </imageView>
                                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Menu" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tsf-ke-U8E">
-                                                                            <rect key="frame" x="50" y="0.0" width="45" height="40"/>
+                                                                            <rect key="frame" x="30" y="0.0" width="45" height="20"/>
                                                                             <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
                                                                             <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                             <nil key="highlightedColor"/>
@@ -393,12 +393,22 @@
                                                                     </subviews>
                                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                 </stackView>
+                                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tG6-R2-yG0">
+                                                                    <rect key="frame" x="0.0" y="59" width="414" height="1"/>
+                                                                    <color key="backgroundColor" red="0.054055977259999999" green="0.45449525060000001" blue="0.76689403550000002" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                                                    <constraints>
+                                                                        <constraint firstAttribute="height" constant="1" id="dIF-Fo-29M"/>
+                                                                    </constraints>
+                                                                </view>
                                                             </subviews>
                                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                             <constraints>
+                                                                <constraint firstAttribute="bottom" secondItem="tG6-R2-yG0" secondAttribute="bottom" id="7KV-de-aOx"/>
                                                                 <constraint firstItem="3md-dr-ZIh" firstAttribute="centerY" secondItem="vJy-tK-35R" secondAttribute="centerY" id="NZ9-bc-6G9"/>
                                                                 <constraint firstAttribute="height" constant="60" id="Qba-qo-3FI"/>
                                                                 <constraint firstItem="3md-dr-ZIh" firstAttribute="leading" secondItem="vJy-tK-35R" secondAttribute="leading" constant="10" id="aYt-e6-rzb"/>
+                                                                <constraint firstItem="tG6-R2-yG0" firstAttribute="leading" secondItem="vJy-tK-35R" secondAttribute="leading" id="mqt-pX-Zd9"/>
+                                                                <constraint firstAttribute="trailing" secondItem="tG6-R2-yG0" secondAttribute="trailing" id="qc0-QM-PyD"/>
                                                             </constraints>
                                                         </view>
                                                     </subviews>
@@ -449,7 +459,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Brl-hl-KGa" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="UpT-6u-Awz" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="-1562" y="-593"/>
+            <point key="canvasLocation" x="-1562.3188405797102" y="-593.30357142857144"/>
         </scene>
         <!--Maps-->
         <scene sceneID="tne-QT-ifu">
@@ -1389,7 +1399,7 @@
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" indicatorStyle="white" dataMode="prototypes" style="plain" separatorStyle="none" allowsSelection="NO" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="mCu-04-jss">
                                 <rect key="frame" x="0.0" y="90" width="414" height="723"/>
-                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color key="backgroundColor" red="0.054055977259999999" green="0.45449525060000001" blue="0.76689403550000002" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="FeedsCell" rowHeight="165" id="dg6-Rc-7Hb" customClass="FeedsCell" customModule="StudentHub" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="28" width="414" height="165"/>
@@ -1777,6 +1787,7 @@
                                         <connections>
                                             <outlet property="avatarImage" destination="rMa-NG-5Xv" id="ehV-ud-lQ0"/>
                                             <outlet property="feedImageView" destination="nG7-AD-MHr" id="6Rm-Rc-7e9"/>
+                                            <outlet property="feedView" destination="bgd-lT-PU0" id="pzr-hw-CsS"/>
                                             <outlet property="majorLabel" destination="6Ri-AY-bvq" id="Lfn-lI-dlu"/>
                                             <outlet property="userNameLabel" destination="rTz-ES-b6O" id="ROe-yN-9oe"/>
                                         </connections>
@@ -2069,7 +2080,7 @@
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="1Fr-6U-kgG">
                                 <rect key="frame" x="0.0" y="90" width="414" height="806"/>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                <color key="backgroundColor" red="0.054055977259999999" green="0.45449525060000001" blue="0.76689403550000002" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="SettingsCell" rowHeight="70" id="dgu-YB-wUg" customClass="SettingsCell" customModule="StudentHub" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="28" width="414" height="70"/>

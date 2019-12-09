@@ -128,6 +128,7 @@ class FeedsWithImageAndContentCell: UITableViewCell {
 class FeedsWithImageCell: UITableViewCell {
     
  
+    @IBOutlet weak var feedView: UIView!
     @IBOutlet weak var avatarImage: UIImageView!
     @IBOutlet weak var userNameLabel: UILabel!
     @IBOutlet weak var majorLabel: UILabel!
@@ -135,6 +136,8 @@ class FeedsWithImageCell: UITableViewCell {
     
     override func awakeFromNib() {
         backgroundColor = .clear
+        self.feedView.roundCorner(radius: 6.0)
+        self.feedView.setShadow(color: .black, opacity: 0.5, shadowRadius: 1.0, shadowOffset_x: 0, shadowOffset_y: 0)
     }
     
     func updateView(feed: Feed) {

@@ -14,7 +14,7 @@ import MapboxDirections
 import MapboxNavigation
 import MapboxCoreNavigation
 
-class MapViewController: UIViewController, CLLocationManagerDelegate  {
+class MapViewController: UIViewController, CLLocationManagerDelegate, MGLMapViewDelegate  {
 
     @IBOutlet weak var locationManagerView: UIView!
     @IBOutlet weak var mapView: MGLMapView!
@@ -23,7 +23,14 @@ class MapViewController: UIViewController, CLLocationManagerDelegate  {
     @IBOutlet weak var topMenu: UIButton!
     
     var parkedCarCoordinates: CLLocationCoordinate2D!
-    weak var locationManager: CLLocationManager!
+    lazy var locationManager: CLLocationManager = {
+        let manager = CLLocationManager()
+        manager.delegate = self
+        manager.desiredAccuracy = kCLLocationAccuracyBest
+        manager.distanceFilter = kCLDistanceFilterNone
+        manager.requestWhenInUseAuthorization()
+        return manager
+    }()
     
     deinit {
         print("Deinitializing viewController")
@@ -35,9 +42,9 @@ class MapViewController: UIViewController, CLLocationManagerDelegate  {
         self.mapView.logoView.isHidden = true
         self.mapView.attributionButton.isHidden = true
         self.mapView.allowsTilting = true
-        self.locationManager = CLLocationManager()
-        self.locationManager.delegate = self
-         Radar.setDelegate(self)
+        self.locationManager.startUpdatingLocation()
+        
+        Radar.setDelegate(self)
         self.findMyCarButton.isHidden = true
         self.addSideMenuButton(menuButton: topMenu)
         
@@ -46,48 +53,16 @@ class MapViewController: UIViewController, CLLocationManagerDelegate  {
         mapView.camera = MGLMapCamera(lookingAtCenter: CLLocationCoordinate2D(latitude: 28.553669, longitude: -81.251474), altitude: 600, pitch: 80, heading: 1)
 //        self.setLocationAuthorization()
     }
-    
-    func setLocationAuthorization() {
-        switch CLLocationManager.authorizationStatus() {
-        case .authorizedAlways:
-            self.locationManagerView.isHidden = true
-            let trackingOptions = RadarTrackingOptions()
-            trackingOptions.priority = .efficiency // use .efficiency instead to reduce location update frequency
-            trackingOptions.offline = .replayOff // use .replayOff instead to disable offline replay
-            trackingOptions.sync = .all // use .all instead to sync all location updates
-            
-            Radar.startTracking(trackingOptions: trackingOptions)
-            break
-        case .authorizedWhenInUse:
-            self.locationManagerView.isHidden = true
-            Radar.trackOnce(completionHandler: { [unowned self] (status: RadarStatus, location: CLLocation?, events: [RadarEvent]?, user: RadarUser?) in
-                // do something with status, location, events, user
-            })
-            break
-        case .notDetermined:
-            self.locationManagerView.isHidden = false
-            self.locationManager.requestAlwaysAuthorization()
-            break
-        case .restricted:
-            self.locationManagerView.isHidden = false
-            break
-        case .denied:
-            self.locationManagerView.isHidden = false
-            break
-        default:
-            self.locationManager.requestAlwaysAuthorization()
-        }
-    }
+
     
     @IBAction func findMyCarButtonTapped(_ sender: UIButton) {
-        if let locationManager = self.locationManager {
-            if let userLocation = locationManager.location {
-                if let parkedCarCoordinates = self.parkedCarCoordinates {
-                    self.BuildPolyline(destination: parkedCarCoordinates, user_location: userLocation.coordinate) { [unowned self] (error) in
-                        
-                    }
+       if let userLocation = locationManager.location {
+        locationManager.activityType = .fitness
+            if let parkedCarCoordinates = self.parkedCarCoordinates {
+                self.BuildPolyline(destination: parkedCarCoordinates, user_location: userLocation.coordinate) { [unowned self] (error) in
                     
                 }
+                
             }
         }
     }
@@ -178,14 +153,82 @@ extension MapViewController {
     //------------------------------- MONITORING LOCATION MANAGER ------------------------------
     
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
-        self.setLocationAuthorization()
+        switch CLLocationManager.authorizationStatus() {
+        case .authorizedAlways:
+            self.locationManagerView.isHidden = true
+            let trackingOptions = RadarTrackingOptions()
+            trackingOptions.priority = .efficiency // use .efficiency instead to reduce location update frequency
+            trackingOptions.offline = .replayOff // use .replayOff instead to disable offline replay
+            trackingOptions.sync = .all // use .all instead to sync all location updates
+            
+            Radar.startTracking(trackingOptions: trackingOptions)
+            break
+        case .authorizedWhenInUse:
+            self.locationManagerView.isHidden = true
+            Radar.trackOnce(completionHandler: { [unowned self] (status: RadarStatus, location: CLLocation?, events: [RadarEvent]?, user: RadarUser?) in
+                // do something with status, location, events, user
+            })
+            break
+        case .notDetermined:
+            self.locationManagerView.isHidden = false
+            self.locationManager.requestWhenInUseAuthorization()
+            break
+        case .restricted:
+            self.locationManagerView.isHidden = false
+            break
+        case .denied:
+            self.locationManagerView.isHidden = false
+            break
+        default:
+            self.locationManager.requestWhenInUseAuthorization()
+        }
     }
     
 }
 
-extension MapViewController: MGLMapViewDelegate {
-    func mapView(_ mapView: MGLMapView, didFinishLoading style: MGLStyle) {
-        self.setLocationAuthorization()
+
+extension MapViewController {
+//    func mapView(_ mapView: MGLMapView, viewFor annotation: MGLAnnotation) -> MGLAnnotationView? {
+//        if annotation is MGLUserLocation { return nil}
+//
+//        var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: "collegeAnnotationView")
+//
+//        if annotationView == nil {
+//            annotationView = MGLAnnotationView(annotation: annotation, reuseIdentifier: "collegeAnnotationView")
+//            annotationView?.frame = CGRect(x: 0, y: 0, width: 30, height: 30)
+//            annotationView?.layer.cornerRadius = (annotationView?.frame.size.width)! / 2
+//            annotationView?.layer.borderWidth = 4.0
+//            annotationView?.layer.borderColor = UIColor.white.cgColor
+//            annotationView!.backgroundColor = UIColor(red: 0.03, green: 0.80, blue: 0.69, alpha: 1.0)
+//        }
+//
+//        return annotationView
+//    }
+    
+    
+    func mapView(_ mapView: MGLMapView, imageFor annotation: MGLAnnotation) -> MGLAnnotationImage? {
+     
+        if let castAnnotation = annotation as? MyCustomPointAnnotation {
+            if (!castAnnotation.willUseImage) {
+                return nil
+            }
+        }
+         
+        // For better performance, always try to reuse existing annotations.
+        var annotationImage = mapView.dequeueReusableAnnotationImage(withIdentifier: "parked_car")
+         
+        // If there is no reusable annotation image available, initialize a new one.
+        if(annotationImage == nil) {
+            annotationImage = MGLAnnotationImage(image: UIImage(named: "car_annotation")!, reuseIdentifier: "car_annotation")
+            
+        }
+         
+        return annotationImage
+    }
+     
+    func mapView(_ mapView: MGLMapView, annotationCanShowCallout annotation: MGLAnnotation) -> Bool {
+        // Always allow callouts to popup when annotations are tapped.
+        return true
     }
 }
 
@@ -218,7 +261,7 @@ extension MapViewController {
         let destination = Waypoint(coordinate: destinationCoordinate, coordinateAccuracy: -1, name: "My parked car")
         destination.targetCoordinate = destinationCoordinate
         
-        let options = NavigationRouteOptions(waypoints: [origin, destination], profileIdentifier: .automobile)
+        let options = NavigationRouteOptions(waypoints: [origin, destination], profileIdentifier: .walking)
         
         _ = Directions.shared.calculate(options, completionHandler: { [unowned self] (Waypoints, routes, error) in
             

@@ -156,10 +156,10 @@
 		3E0B1CFF2324626A00F9B33D /* StudentHub */ = {
 			isa = PBXGroup;
 			children = (
+				3E0B1D162324D4FE00F9B33D /* Extensions */,
 				3EC9ACE32342E77B003CDD09 /* Properties */,
 				3E6AF0DE2342902E006F48D9 /* Database */,
 				3E3C75742325B3D4008E3C5E /* External_APIs */,
-				3E0B1D162324D4FE00F9B33D /* Extensions */,
 				3E0B1D152324D4EC00F9B33D /* Models */,
 				3E0B1D122324CC1A00F9B33D /* Controllers */,
 				3E0B1D002324626A00F9B33D /* AppDelegate.swift */,

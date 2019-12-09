@@ -51,7 +51,7 @@ class SignupViewController: UIViewController {
             
             var newUser = User()
             newUser.setNewUser(id: user.uid, email: email)
-            Database.service.createUser(user_id: newUser.id, data: newUser.dataJson, completion: { [unowned self] (error) in
+            Database.service.createUser(user_id: newUser.id, data: newUser.dataJson, completion: {  (error) in
                 if error != nil {
                     user.delete(completion: { (error) in
                         if error != nil {
